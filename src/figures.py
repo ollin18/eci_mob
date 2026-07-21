@@ -3,15 +3,21 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import networkx as nx
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
+from matplotlib.colors import Normalize, TwoSlopeNorm
 from scipy import stats
 from scipy.cluster.hierarchy import dendrogram
 
 FIG_DIR = "figs"
 LINE = "#E74C3C"
-COUNTRY_COLOR = {"US": "#6a51a3", "MX": "#b30000", "BR": "#238b45", "AR": "#2171b5"}
-CLUSTER_COLOR = ["#c9186b", "#178a7a", "#7a4a2a", "#e23b2e", "#e79a1f", "#7d3fbf"]
+COUNTRY_COLOR = {"US": "#2563eb", "MX": "#059669", "BR": "#d97706", "AR": "#7c3aed"}
+COUNTRY_NAME = {"US": "United States", "MX": "Mexico", "BR": "Brazil", "AR": "Argentina"}
+CLUSTER_COLOR = {1: "#be185d", 2: "#0f766e", 3: "#7c2d12",
+                 4: "#dc2626", 5: "#f59e0b", 6: "#6b21a8"}
+ECI_MOB = r"$\mathbf{ECI}^{\mathbf{mob}}$"
+ECI_SECT = r"$\mathbf{ECI}^{\mathbf{sect}}$"
 
 
 def style():
@@ -31,91 +37,39 @@ def save(fig, name):
     plt.close(fig)
 
 
-ECI_MOB = r"$\mathbf{ECI}^{\mathbf{mob}}$"
-ECI_SECT = r"$\mathbf{ECI}^{\mathbf{sect}}$"
+def _stars(p):
+    return "***" if p < .01 else "**" if p < .05 else "*" if p < .10 else "n.s."
 
 
 # ======================
-# Validation scatters
-# ======================
-
-def _fit(ax, x, y):
-    if len(x) < 2:
-        return (float("nan"), float("nan"))
-    b, a = np.polyfit(x, y, 1)
-    xs = np.array(ax.get_xlim())
-    ax.plot(xs, b * xs + a, color=LINE, lw=2.5, zorder=1)
-    return stats.pearsonr(x, y)
-
-
-def city_income_panels(city, name, x="mean_eci", xlabel=ECI_MOB):
-    """One panel per country: city income against a city predictor."""
-    order = ["US", "MX", "BR", "AR"]
-    fig, axes = plt.subplots(1, 4, figsize=(18, 4.4))
-    for ax, c in zip(axes, order):
-        g = city[city["country"] == c]
-        ax.scatter(g[x], g["income"], s=90, color=COUNTRY_COLOR[c],
-                   edgecolor="white", lw=1.5, zorder=3)
-        r, p = _fit(ax, g[x].values, g["income"].values)
-        star = "***" if p < .01 else "**" if p < .05 else "*" if p < .10 else "n.s."
-        ax.set_title({"US": "United States", "MX": "Mexico", "BR": "Brazil",
-                      "AR": "Argentina"}[c], fontweight="bold")
-        ax.text(.05, .92, rf"$R^2$ = {r**2:.3f} {star}", transform=ax.transAxes,
-                fontsize=13, va="top")
-        ax.set_xlabel(xlabel)
-    axes[0].set_ylabel("Monthly income")
-    fig.tight_layout()
-    save(fig, name)
-
-
-def subcity_panels(points, fits, name):
-    """One panel per country: origin wealth against ECI over all work cells."""
-    order = ["US", "MX", "BR", "AR"]
-    fig, axes = plt.subplots(1, 4, figsize=(18, 4.4), sharey=True)
-    fmap = fits.set_index("country")
-    for ax, c in zip(axes, order):
-        g = points[points["country"] == c]
-        if g.empty or c not in fmap.index:
-            ax.axis("off")
-            continue
-        ax.scatter(g["eci_z"], g["wealth_z"], s=6, alpha=.25,
-                   color=COUNTRY_COLOR[c], edgecolor="none")
-        _fit(ax, g["eci_z"].values, g["wealth_z"].values)
-        row = fmap.loc[c]
-        ax.set_title({"US": "United States", "MX": "Mexico", "BR": "Brazil",
-                      "AR": "Argentina"}[c], fontweight="bold")
-        ax.text(.05, .93, rf"$R^2$ = {row.r2:.3f} {row.sig}", transform=ax.transAxes,
-                fontsize=13, va="top")
-        ax.set_xlabel(ECI_MOB)
-    axes[0].set_ylabel("Origin wealth (z-score)")
-    fig.tight_layout()
-    save(fig, name)
-
-
-# ======================
-# Distributions and maps
+# Distributions and maps (fig 2)
 # ======================
 
 def ridge(eci, name):
-    """ECI distribution per city, one country per panel."""
-    order = ["US", "MX", "BR", "AR"]
+    """ECI distribution per city, magma gradient fill, one country per panel."""
     from data import CITY_LABEL
-    fig, axes = plt.subplots(1, 4, figsize=(18, 7))
+    order = ["US", "MX", "BR", "AR"]
+    fig, axes = plt.subplots(1, 4, figsize=(20, 8))
     for ax, c in zip(axes, order):
         d = eci[eci["country"] == c]
         cities = d.groupby("city")["eci"].mean().sort_values().index
+        vmin, vmax = d["eci"].quantile(.01), min(d["eci"].quantile(.99), 5)
+        norm = Normalize(vmin, vmax)
         for i, city in enumerate(cities):
             v = d[d["city"] == city]["eci"].dropna()
-            xs = np.linspace(v.min(), v.max(), 200)
+            xs = np.linspace(v.min(), min(v.max(), 5), 300)
             dens = stats.gaussian_kde(v)(xs)
-            dens = dens / dens.max() * .8
-            ax.fill_between(xs, i, i + dens, color=COUNTRY_COLOR[c], alpha=.55, lw=0)
-            ax.plot(xs, i + dens, color="black", lw=.8)
-            ax.text(v.min(), i - .05, CITY_LABEL.get(city, city), fontsize=9, va="top")
-        ax.set_title({"US": "United States", "MX": "Mexico", "BR": "Brazil",
-                      "AR": "Argentina"}[c], fontweight="bold")
+            dens = dens / dens.max() * .85
+            for j in range(len(xs) - 1):
+                ax.fill_between(xs[j:j + 2], i, i + dens[j:j + 2], lw=0,
+                                color=plt.cm.magma(norm(xs[j])))
+            ax.plot(xs, i + dens, color="black", lw=1)
+            ax.text(v.min(), i - .07, CITY_LABEL.get(city, city), fontsize=11, va="top")
+        ax.set_title(COUNTRY_NAME[c], fontweight="bold", fontsize=16)
         ax.set_yticks([])
-        ax.set_xlabel(ECI_MOB)
+        ax.set_xlabel(ECI_MOB, fontsize=14)
+        for s in ("left", "right", "top"):
+            ax.spines[s].set_visible(False)
     fig.tight_layout()
     save(fig, name)
 
@@ -133,116 +87,265 @@ def _hex_patches(geomids):
     return polys
 
 
-def city_map(eci, city, name, cmap="viridis"):
-    """ECI over a city's work cells, hexagon geometry from the H3 index."""
-    d = eci[eci["city"] == city].dropna(subset=["eci"])
-    patches = _hex_patches(d["geomid"])
-    fig, ax = plt.subplots(figsize=(6, 6))
-    pc = PatchCollection(patches, cmap=cmap, edgecolor="none")
-    pc.set_array(d["eci"].values)
-    ax.add_collection(pc)
-    ax.autoscale_view()
-    ax.set_aspect("equal")
-    ax.axis("off")
-    fig.colorbar(pc, ax=ax, shrink=.6, label=ECI_MOB)
-    save(fig, name)
-
-
-# ======================
-# Sectors
-# ======================
-
-def sector_bar(ms, name):
-    """Mean sectoral complexity, highest to lowest."""
-    fig, ax = plt.subplots(figsize=(7, 8))
-    y = np.arange(len(ms))[::-1]
-    colors = plt.cm.magma(np.linspace(.15, .85, len(ms)))
-    ax.barh(y, ms["mean"], xerr=ms["sem"], color=colors, edgecolor="#2c3e50")
-    ax.set_yticks(y)
-    ax.set_yticklabels(ms["sector"])
-    ax.axvline(0, color="#555", lw=1, ls="--")
-    ax.set_xlabel(ECI_SECT)
-    ax.set_title("Mean sectoral complexity", fontweight="bold")
+def city_maps(eci, cities, name):
+    """ECI over each city's work cells, magma, geometry from the H3 index."""
+    from data import CITY_LABEL
+    fig, axes = plt.subplots(1, len(cities), figsize=(5.2 * len(cities), 5.4))
+    for ax, city in zip(np.atleast_1d(axes), cities):
+        d = eci[eci["city"] == city].dropna(subset=["eci"])
+        pc = PatchCollection(_hex_patches(d["geomid"]), cmap="magma", edgecolor="none")
+        pc.set_array(d["eci"].clip(*d["eci"].quantile([.01, .99])).values)
+        ax.add_collection(pc)
+        ax.autoscale_view()
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.set_title(CITY_LABEL.get(city, city), fontweight="bold", fontsize=14)
+        fig.colorbar(pc, ax=ax, shrink=.55, label=ECI_MOB)
     fig.tight_layout()
     save(fig, name)
 
+
+# ======================
+# Validation scatters (fig 3)
+# ======================
+
+def _scatter_fit(ax, x, y, color, r2_only=False):
+    if len(x) < 2:
+        return None, None
+    b, a = np.polyfit(x, y, 1)
+    xs = np.array([x.min(), x.max()])
+    ax.plot(xs, b * xs + a, color=LINE, lw=2.5, zorder=1)
+    return stats.pearsonr(x, y)
+
+
+def city_income_panels(city, name, x="mean_eci", xlabel=ECI_MOB):
+    """City income against a city predictor, one country per panel with labels."""
+    from data import CITY_LABEL
+    order = ["US", "MX", "BR", "AR"]
+    fig, axes = plt.subplots(1, 4, figsize=(19, 4.6))
+    for ax, c in zip(axes, order):
+        g = city[city["country"] == c]
+        if g.empty:
+            ax.axis("off")
+            continue
+        sc = ax.scatter(g[x], g["income"], s=150, c=g[x], cmap="magma",
+                        edgecolor="#2c3e50", lw=1.5, zorder=3)
+        r, p = _scatter_fit(ax, g[x].values, g["income"].values, None)
+        ax.set_title(COUNTRY_NAME[c], fontweight="bold", fontsize=15)
+        ax.text(.05, .93, rf"$R^2$ = {r**2:.3f} {_stars(p)}", transform=ax.transAxes,
+                fontsize=14, va="top")
+        ax.set_xlabel(xlabel, fontsize=14)
+        for _, row in g.iterrows():
+            ax.annotate(CITY_LABEL.get(row["city"], row["city"]),
+                        (row[x], row["income"]), fontsize=8, color="#2c3e50",
+                        xytext=(4, 4), textcoords="offset points")
+    axes[0].set_ylabel("Monthly income", fontsize=13)
+    fig.tight_layout()
+    save(fig, name)
+
+
+def subcity_panels(points, fits, name):
+    """Origin wealth against ECI over all work cells, coloured by city, per country."""
+    order = ["US", "MX", "BR", "AR"]
+    fmap = fits.set_index("country")
+    fig, axes = plt.subplots(1, 4, figsize=(19, 4.6), sharey=True)
+    for ax, c in zip(axes, order):
+        g = points[points["country"] == c]
+        if g.empty or c not in fmap.index:
+            ax.axis("off")
+            continue
+        for city, gc in g.groupby("city"):
+            ax.scatter(gc["eci_z"], gc["wealth_z"], s=7, alpha=.3, edgecolor="none")
+        _scatter_fit(ax, g["eci_z"].values, g["wealth_z"].values, None)
+        row = fmap.loc[c]
+        ax.set_title(COUNTRY_NAME[c], fontweight="bold", fontsize=15)
+        ax.text(.05, .93, rf"$R^2$ = {row.r2:.3f} {row.sig}", transform=ax.transAxes,
+                fontsize=14, va="top")
+        ax.set_xlabel(ECI_MOB, fontsize=14)
+    axes[0].set_ylabel("Origin wealth (z-score)", fontsize=13)
+    fig.tight_layout()
+    save(fig, name)
+
+
+# ======================
+# Sectors (fig 4)
+# ======================
 
 def sector_heatmap(rank_mat, name, country_name):
-    fig, ax = plt.subplots(figsize=(11, 4))
+    """City by sector rank of mean complexity, 1 = most complex."""
+    fig, ax = plt.subplots(figsize=(12, 4.2))
     im = ax.imshow(rank_mat.values, cmap="RdBu", aspect="auto")
     ax.set_xticks(range(rank_mat.shape[1]))
-    ax.set_xticklabels(rank_mat.columns, rotation=90, fontsize=8)
+    ax.set_xticklabels(rank_mat.columns, rotation=45, ha="right", fontsize=9)
     ax.set_yticks(range(rank_mat.shape[0]))
-    ax.set_yticklabels(rank_mat.index)
-    fig.colorbar(im, ax=ax, shrink=.7, label="Rank")
-    ax.set_title(f"Ranking of mean {ECI_SECT[:-1]}$ - {country_name}", fontweight="bold")
+    ax.set_yticklabels(rank_mat.index, fontsize=11)
+    fig.colorbar(im, ax=ax, shrink=.8, label="Rank")
+    ax.set_title(f"Ranking of mean {ECI_SECT} - {country_name}", fontweight="bold")
     fig.tight_layout()
     save(fig, name)
 
 
-def _radar(ax, sectors, values, color, title):
+def _radar_axes(ax, sectors):
     ang = np.linspace(0, 2 * np.pi, len(sectors), endpoint=False)
-    ang = np.r_[ang, ang[:1]]
-    v = np.r_[values, values[:1]]
-    ax.plot(ang, v, color=color, lw=2)
-    ax.fill(ang, v, color=color, alpha=.25)
-    ax.set_xticks(ang[:-1])
-    ax.set_xticklabels(sectors, fontsize=7)
-    ax.set_title(title, fontweight="bold", pad=15)
+    ax.set_xticks(ang)
+    ax.set_xticklabels(sectors, fontsize=8)
+    ax.set_theta_offset(np.pi / 2)
+    ax.set_theta_direction(-1)
+    return ang
 
 
 def city_radars(rank_zscore, cities, name):
+    """City sector profile with the country mean and a plus/minus one SD band."""
     from data import CITY_LABEL
-    fig, axes = plt.subplots(1, len(cities), figsize=(5 * len(cities), 5),
+    fig, axes = plt.subplots(1, len(cities), figsize=(5 * len(cities), 5.2),
                              subplot_kw=dict(polar=True))
     for ax, city in zip(np.atleast_1d(axes), cities):
-        d = rank_zscore[rank_zscore["city"] == city].sort_values("sector")
-        c = COUNTRY_COLOR.get(d["country"].iloc[0], "#333")
-        _radar(ax, d["sector"].tolist(), d["rank_zscore"].values, c,
-               CITY_LABEL.get(city, city))
+        country = rank_zscore.loc[rank_zscore["city"] == city, "country"].iloc[0]
+        cd = rank_zscore[rank_zscore["country"] == country]
+        sectors = sorted(cd["sector"].unique())
+        ang = _radar_axes(ax, sectors)
+        loop = np.r_[ang, ang[:1]]
+        mean = cd.groupby("sector")["rank_zscore"].mean().reindex(sectors).values
+        sd = cd.groupby("sector")["rank_zscore"].std().reindex(sectors).values
+        ax.fill_between(loop, np.r_[mean - sd, mean[0] - sd[0]],
+                        np.r_[mean + sd, mean[0] + sd[0]], color="#cccccc", alpha=.4)
+        ax.plot(loop, np.r_[mean, mean[:1]], color="#555", ls="--", lw=1.2)
+        v = (rank_zscore[rank_zscore["city"] == city].set_index("sector")["rank_zscore"]
+             .reindex(sectors).values)
+        col = COUNTRY_COLOR[country]
+        ax.plot(loop, np.r_[v, v[:1]], color=col, lw=2.2)
+        ax.fill(loop, np.r_[v, v[:1]], color=col, alpha=.2)
+        ax.set_title(CITY_LABEL.get(city, city), fontweight="bold", pad=18)
     fig.tight_layout()
+    save(fig, name)
+
+
+def specialization_dotplot(rank_zscore, name):
+    """Each sector's cities on the rank z-score axis, coloured by country."""
+    sectors = sorted(rank_zscore["sector"].unique())
+    fig, ax = plt.subplots(figsize=(9, 10))
+    for i, sec in enumerate(sectors):
+        d = rank_zscore[rank_zscore["sector"] == sec]
+        ax.axhline(i, color="#eee", lw=6, zorder=0)
+        ax.scatter(d["rank_zscore"], [i] * len(d),
+                   c=[COUNTRY_COLOR[c] for c in d["country"]], s=45,
+                   edgecolor="white", lw=.6, zorder=3)
+    ax.axvline(0, color="#c0392b", ls="--", lw=1.2)
+    ax.set_yticks(range(len(sectors)))
+    ax.set_yticklabels(sectors, fontsize=10)
+    ax.set_xlabel("Rank z-score")
+    ax.set_title("City specialization", fontweight="bold")
+    handles = [plt.Line2D([], [], marker="o", ls="", color=COUNTRY_COLOR[c],
+                          label=COUNTRY_NAME[c]) for c in ["US", "MX", "BR", "AR"]]
+    ax.legend(handles=handles, loc="lower right", frameon=True)
+    fig.tight_layout()
+    save(fig, name)
+
+
+# ======================
+# City typology (fig 5)
+# ======================
+
+def cosine_heatmap(sim, cl, name):
+    """City by city cosine similarity, ordered by cluster."""
+    from data import CITY_LABEL
+    order = cl.sort_values().index
+    s = sim.loc[order, order]
+    lab = [CITY_LABEL.get(c, c) for c in order]
+    fig, ax = plt.subplots(figsize=(10, 9))
+    im = ax.imshow(s.values, cmap="RdBu_r", vmin=-1, vmax=1)
+    ax.set_xticks(range(len(lab)))
+    ax.set_xticklabels(lab, rotation=90, fontsize=7)
+    ax.set_yticks(range(len(lab)))
+    ax.set_yticklabels(lab, fontsize=7)
+    fig.colorbar(im, ax=ax, shrink=.7, label="Cosine similarity")
+    fig.tight_layout()
+    save(fig, name)
+
+
+def dendro(lmat, labels, cl, country, name):
+    """Circular dendrogram with cluster-coloured arcs and country-coloured leaves."""
+    from data import CITY_LABEL
+    d = dendrogram(lmat, labels=list(labels), no_plot=True,
+                   color_threshold=.7 * lmat[:, 2].max())
+    leaves = d["ivl"]
+    n = len(leaves)
+    ang = {leaf: 2 * np.pi * i / n for i, leaf in enumerate(leaves)}
+    fig, ax = plt.subplots(figsize=(9, 9), subplot_kw=dict(polar=True))
+    icoord = np.array(d["icoord"])
+    dcoord = np.array(d["dcoord"])
+    dmax = dcoord.max()
+    xmax = icoord.max()
+    for xs, ys, col in zip(icoord, dcoord, d["color_list"]):
+        theta = [x / xmax * 2 * np.pi for x in xs]
+        r = [dmax - y for y in ys]
+        ax.plot([theta[0], theta[1]], [r[0], r[1]], color=col, lw=2)
+        seg = np.linspace(theta[1], theta[2], 30)
+        ax.plot(seg, [r[1]] * 30, color=col, lw=2)
+        ax.plot([theta[2], theta[3]], [r[2], r[3]], color=col, lw=2)
+    for i, leaf in enumerate(leaves):
+        th = (2 * i + 1) / (2 * n) * 2 * np.pi
+        c = country.get(leaf, "US")
+        ax.scatter(th, dmax, s=90, color=COUNTRY_COLOR[c], edgecolor="#2c3e50", zorder=5)
+        ax.text(th, dmax * 1.12, CITY_LABEL.get(leaf, leaf),
+                rotation=np.degrees(th) - 90, ha="center", va="center", fontsize=8)
+    ax.set_axis_off()
+    ax.set_title("Hierarchical clustering", fontweight="bold", pad=20)
+    save(fig, name)
+
+
+def _forced_layout(g, cl):
+    node2c = {n: int(cl[n]) for n in g.nodes()}
+    clusters = sorted(set(node2c.values()))
+    centers = {c: (4 * np.cos(2 * np.pi * i / len(clusters) - np.pi / 2),
+                   4 * np.sin(2 * np.pi * i / len(clusters) - np.pi / 2))
+               for i, c in enumerate(clusters)}
+    by_c = {}
+    for n, c in node2c.items():
+        by_c.setdefault(c, []).append(n)
+    pos = {}
+    for c, nodes in by_c.items():
+        cx, cy = centers[c]
+        if len(nodes) == 1:
+            pos[nodes[0]] = (cx, cy)
+            continue
+        local = nx.spring_layout(g.subgraph(nodes), k=1.5, iterations=50, seed=42)
+        for n, (x, y) in local.items():
+            pos[n] = (cx + x * 1.2, cy + y * 1.2)
+    return pos, node2c
+
+
+def city_network(g, cl, name):
+    """Similarity network, nodes forced into cluster regions and coloured by cluster."""
+    from data import CITY_LABEL
+    pos, node2c = _forced_layout(g, cl)
+    fig, ax = plt.subplots(figsize=(11, 11), facecolor="white")
+    w = [g[u][v]["weight"] for u, v in g.edges]
+    nx.draw_networkx_edges(g, pos, ax=ax, width=[x * 2.5 for x in w],
+                           edge_color="#b0b0b0", alpha=.55)
+    nx.draw_networkx_nodes(g, pos, ax=ax, node_size=620,
+                           node_color=[CLUSTER_COLOR[node2c[n]] for n in g.nodes],
+                           edgecolors="#1a252f", linewidths=2)
+    for n, (x, y) in pos.items():
+        ax.text(x, y + .18, CITY_LABEL.get(n, n), ha="center", va="bottom", fontsize=9)
+    ax.axis("off")
+    ax.margins(.08)
     save(fig, name)
 
 
 def cluster_radars(profiles, name):
+    """Average sector profile per cluster."""
+    sectors = sorted(profiles["sector"].unique())
     clusters = sorted(profiles["cluster"].unique())
-    fig, axes = plt.subplots(1, len(clusters), figsize=(4 * len(clusters), 4.2),
+    fig, axes = plt.subplots(1, len(clusters), figsize=(4 * len(clusters), 4.4),
                              subplot_kw=dict(polar=True))
     for ax, cl in zip(np.atleast_1d(axes), clusters):
-        d = profiles[profiles["cluster"] == cl].sort_values("sector")
-        _radar(ax, d["sector"].tolist(), d["mean_z"].values,
-               CLUSTER_COLOR[(cl - 1) % len(CLUSTER_COLOR)], f"Cluster {cl}")
+        ang = _radar_axes(ax, sectors)
+        loop = np.r_[ang, ang[:1]]
+        v = profiles[profiles["cluster"] == cl].set_index("sector")["mean_z"].reindex(sectors).values
+        col = CLUSTER_COLOR[(cl - 1) % 6 + 1]
+        ax.plot(loop, np.r_[v, v[:1]], color=col, lw=2.2)
+        ax.fill(loop, np.r_[v, v[:1]], color=col, alpha=.25)
+        ax.set_title(f"Cluster {cl}", fontweight="bold", pad=15)
     fig.tight_layout()
-    save(fig, name)
-
-
-# ======================
-# Clustering figures
-# ======================
-
-def dendro(lmat, labels, cl, name):
-    from data import CITY_LABEL
-    fig, ax = plt.subplots(figsize=(7, 9))
-    lab = [CITY_LABEL.get(c, c) for c in labels]
-    dendrogram(lmat, labels=lab, orientation="right", ax=ax,
-               color_threshold=.7 * lmat[:, 2].max())
-    ax.set_xlabel("Distance (1 - cosine similarity)")
-    ax.set_title("Hierarchical clustering", fontweight="bold")
-    fig.tight_layout()
-    save(fig, name)
-
-
-def city_network(g, cl, name):
-    import networkx as nx
-    from data import CITY_LABEL
-    pos = nx.spring_layout(g, weight="weight", seed=42)
-    colors = [CLUSTER_COLOR[(cl[n] - 1) % len(CLUSTER_COLOR)] for n in g.nodes]
-    fig, ax = plt.subplots(figsize=(9, 9))
-    w = [g[u][v]["weight"] for u, v in g.edges]
-    nx.draw_networkx_edges(g, pos, ax=ax, width=w, edge_color="#b0b0b0", alpha=.6)
-    nx.draw_networkx_nodes(g, pos, ax=ax, node_color=colors, node_size=520,
-                           edgecolors="#2c3e50")
-    nx.draw_networkx_labels(g, pos, ax=ax, font_size=9,
-                            labels={n: CITY_LABEL.get(n, n) for n in g.nodes})
-    ax.axis("off")
     save(fig, name)

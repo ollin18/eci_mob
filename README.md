@@ -26,13 +26,13 @@ Complexity is estimated once per country over its pooled metros, so values compa
 - Python 3.9+
 - See `requirements.txt` for package dependencies
 
-Each notebook in `src/` runs from the repository root and imports the helper modules beside it. Render with `quarto render src/<notebook>.qmd`.
+Each notebook lives in `src/` and imports the helper modules beside it. Render from that folder, for example `cd src && quarto render city_clustering.qmd`.
 
 ## Key Results
 
 ### Complexity across the city
 
-![New York](figs/map_nyc.png)
+![ECI over work locations](figs/eci_maps.png)
 
 The index is defined on work locations and mapped straight from the H3 cell index. Complexity concentrates in and around the central business core and thins toward the edges, with secondary peaks at sub-centres. Some metros read as monocentric, others as polycentric.
 
@@ -52,11 +52,11 @@ A city's worker-weighted mean complexity is strongly associated with its income,
 
 The work location by education quantile matrix is significantly more nested than a fill-matched null in every country. Complex destinations recruit across the whole education range; simpler ones draw from a narrowing subset near their own level. This is the structure that lets a single axis summarise each location.
 
-### Sectors carry unequal complexity
+### Cities specialise differently in what they do
 
-![Mean complexity by sector](figs/sector_complexity.png)
+![City sector profiles](figs/city_radars.png)
 
-Professional services, corporate and business support sit in the most complex locations; retail, manufacturing and agriculture in the least.
+Projecting complexity onto sectors gives each sector a within-city complexity. Cities of similar overall complexity still differ in their mix, read here against the country mean and its one standard deviation band: professional services, corporate and business support rank high, retail and manufacturing low.
 
 ### Cities group by what they specialise in, across borders
 

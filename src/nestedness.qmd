@@ -22,8 +22,9 @@ one. We measure this with NODF and compare it to a null that preserves the numbe
 active bins per location and per quantile.
 
 ```{python}
-import os
+import os, sys
 os.chdir("..")
+sys.path.insert(0, "src")
 
 import pandas as pd
 

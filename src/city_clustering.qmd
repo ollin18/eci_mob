@@ -21,27 +21,40 @@ metros that specialise alike, regardless of country, and the same similarity dra
 network of who resembles whom.
 
 ```{python}
-import os
+import os, sys
 os.chdir("..")
+sys.path.insert(0, "src")
 
 import pandas as pd
 
-from data import load_rank_zscore, wide_profiles, CITY_LABEL
+from data import load_rank_zscore, wide_profiles
 from clustering import similarity, clusters, linkage_matrix, network, cluster_profiles
-from figures import style, dendro, city_network, cluster_radars
+from figures import style, cosine_heatmap, dendro, city_network, cluster_radars
 
 style()
 
 rank_zscore = load_rank_zscore()
+country = dict(zip(rank_zscore["city"], rank_zscore["country"]))
 profiles = wide_profiles(rank_zscore)
 labels, sim = similarity(profiles)
 cl = clusters(sim, k=6)
 ```
 
+## Who resembles whom
+
+```{python}
+cosine_heatmap(sim, cl, "cosine_similarity")
+```
+
+![Cosine similarity](../figs/cosine_similarity.png)
+
+Ordering the cities by cluster brings the blocks of mutually similar metros onto the
+diagonal.
+
 ## Hierarchical clustering
 
 ```{python}
-dendro(linkage_matrix(sim), labels, cl, "dendrogram")
+dendro(linkage_matrix(sim), labels, cl, country, "dendrogram")
 ```
 
 ![Hierarchical clustering](../figs/dendrogram.png)
@@ -53,7 +66,7 @@ borders, as do industrial belts and administrative centres.
 
 ```{python}
 g = network(sim, keep_top=0.6)
-city_network(g, cl.to_dict(), "network")
+city_network(g, cl, "network")
 ```
 
 ![City similarity network](../figs/network.png)

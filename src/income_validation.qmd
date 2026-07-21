@@ -21,8 +21,9 @@ that enters the sub-city test is built from residential census signals independe
 the education signal in the index, so the association does not arise by construction.
 
 ```{python}
-import os
+import os, sys
 os.chdir("..")
+sys.path.insert(0, "src")
 
 import pandas as pd
 
@@ -71,12 +72,16 @@ for c in COUNTRIES:
     rows.append(ce)
 city = city_table(pd.concat(rows, ignore_index=True), income)
 city_income_panels(city, "city_income")
+city_income_panels(city, "city_education", x="education", xlabel="Education rate")
 city_fits(city)
 ```
 
 ![City income against ECI](../figs/city_income.png)
 
 Complexity is strongly associated with income everywhere except Argentina, where it is
-positive but short of significance. Benchmarking against residential education alone
-shows complexity is the better correlate in every country, most sharply in Mexico where
-education is essentially flat against income.
+positive but short of significance.
+
+![City income against education](../figs/city_education.png)
+
+Benchmarking against residential education alone shows complexity is the better correlate
+in every country, most sharply in Mexico where education is essentially flat against income.

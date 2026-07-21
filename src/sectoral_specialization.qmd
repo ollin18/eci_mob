@@ -21,34 +21,21 @@ high; sectors spread across the periphery score low. Comparing cities on their s
 profile shows how metros of similar overall complexity still differ in what they do.
 
 ```{python}
-import os
+import os, sys
 os.chdir("..")
+sys.path.insert(0, "src")
 
 import pandas as pd
 
-from data import load_sector_eci, load_rank_zscore, CITY_LABEL
-from sectors import mean_sector_eci, sector_rank_matrix, city_profile
-from figures import style, sector_bar, sector_heatmap, city_radars
+from data import load_sector_eci, load_rank_zscore
+from sectors import sector_rank_matrix
+from figures import style, sector_heatmap, city_radars, specialization_dotplot
 
 style()
 
 sector_eci = load_sector_eci()
 rank_zscore = load_rank_zscore()
 ```
-
-## Complexity by sector
-
-```{python}
-ms = mean_sector_eci(sector_eci)
-sector_bar(ms, "sector_complexity")
-ms.round(3)
-```
-
-![Mean complexity by sector](../figs/sector_complexity.png)
-
-Professional services, corporate and business support carry the most complexity; retail,
-manufacturing and agriculture the least. The ordering matches the intuition that
-knowledge-intensive work clusters in the most complex parts of a metro.
 
 ## Sector rankings within a country
 
@@ -57,6 +44,9 @@ sector_heatmap(sector_rank_matrix(sector_eci, "MX"), "sector_ranking_mx", "Mexic
 ```
 
 ![Sector rankings, Mexico](../figs/sector_ranking_mx.png)
+
+Reading each city's row shows where its complexity sits: professional services, corporate
+and business support rank high, retail and manufacturing low.
 
 ## Comparing city profiles
 
@@ -67,5 +57,17 @@ city_radars(rank_zscore, ["nyc", "mexico_city", "rio_de_janeiro", "buenos_aires"
 
 ![City sector profiles](../figs/city_radars.png)
 
-Cities with comparable mean complexity still specialise differently. Reading the profiles
-side by side separates finance-heavy from industry-heavy from administration-heavy metros.
+Cities with comparable mean complexity still specialise differently. Each profile is read
+against the country mean and its one standard deviation band, which separates finance-heavy
+from industry-heavy from administration-heavy metros.
+
+## Where each sector concentrates
+
+```{python}
+specialization_dotplot(rank_zscore, "specialization_dotplot")
+```
+
+![City specialization](../figs/specialization_dotplot.png)
+
+Laying every city out along each sector's axis shows which metros stand out in which
+sectors, and that the standouts cut across countries.
