@@ -1,0 +1,82 @@
+---
+title: "Complexity, wealth and income"
+subtitle: "Validating the mobility complexity index at two spatial scales"
+author: "Ollin D. Langle-Chimal"
+date: today
+format:
+  html:
+    page-layout: full
+    toc: true
+    code-fold: true
+    theme: cosmo
+    html-math-method: katex
+jupyter: python3
+---
+
+## Setup
+
+We validate the index against economic outcomes at the two scales where it can be
+observed: the work location within a city, and the metro as a whole. The wealth proxy
+that enters the sub-city test is built from residential census signals independent of
+the education signal in the index, so the association does not arise by construction.
+
+```{python}
+import os
+os.chdir("..")
+
+import pandas as pd
+
+from eci import all_locations, load_panel, location_eci, city_eci, COUNTRIES
+from data import load_city_income, load_origin_wealth, CITY_LABEL
+from validation import city_table, city_fits, subcity_fits, subcity_points
+from figures import style, city_income_panels, subcity_panels
+
+style()
+
+income = load_city_income()
+wealth = load_origin_wealth()
+eci = all_locations()
+```
+
+## Sub-city scale: origin wealth at destination
+
+For each work cell we take its origin wealth at destination, the commuting-weighted
+average of a residential wealth proxy over the home zones that feed it. More complex
+destinations draw their workers from wealthier neighbourhoods.
+
+```{python}
+fits = subcity_fits(eci, wealth)
+pts = subcity_points(eci, wealth)
+subcity_panels(pts, fits, "subcity_wealth")
+fits
+```
+
+![Origin wealth against ECI](../figs/subcity_wealth.png)
+
+The relationship is positive and highly significant in all four countries, across
+thousands of destination cells rather than a handful of city aggregates.
+
+## Metropolitan scale: income
+
+A city's worker-weighted mean complexity tracks its income. Income is in the units each
+national source reports natively, per capita for Argentina and Brazil, per household for
+the United States and Mexico.
+
+```{python}
+rows = []
+for c in COUNTRIES:
+    p = load_panel(c)
+    ce = city_eci(location_eci(p), p)
+    ce["country"] = c
+    rows.append(ce)
+city = city_table(pd.concat(rows, ignore_index=True), income)
+city_income_panels(city, "city_income")
+city_fits(city)
+```
+
+![City income against ECI](../figs/city_income.png)
+
+Complexity is strongly associated with income everywhere except Argentina, where it is
+positive but short of significance. Benchmarking against residential education alone
+shows complexity is the better correlate in every country, most sharply in Mexico where
+education is essentially flat against income.

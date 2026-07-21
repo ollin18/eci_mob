@@ -1,0 +1,71 @@
+---
+title: "A typology of cities"
+subtitle: "Grouping metros by their sector complexity profile"
+author: "Ollin D. Langle-Chimal"
+date: today
+format:
+  html:
+    page-layout: full
+    toc: true
+    code-fold: true
+    theme: cosmo
+    html-math-method: katex
+jupyter: python3
+---
+
+## Setup
+
+Each city is a vector of sector complexity z-scores, taken within its country so the
+comparison is about shape rather than level. Cosine similarity on those profiles groups
+metros that specialise alike, regardless of country, and the same similarity draws the
+network of who resembles whom.
+
+```{python}
+import os
+os.chdir("..")
+
+import pandas as pd
+
+from data import load_rank_zscore, wide_profiles, CITY_LABEL
+from clustering import similarity, clusters, linkage_matrix, network, cluster_profiles
+from figures import style, dendro, city_network, cluster_radars
+
+style()
+
+rank_zscore = load_rank_zscore()
+profiles = wide_profiles(rank_zscore)
+labels, sim = similarity(profiles)
+cl = clusters(sim, k=6)
+```
+
+## Hierarchical clustering
+
+```{python}
+dendro(linkage_matrix(sim), labels, cl, "dendrogram")
+```
+
+![Hierarchical clustering](../figs/dendrogram.png)
+
+Six groups emerge, mixing countries: capital and finance hubs cluster together across
+borders, as do industrial belts and administrative centres.
+
+## Similarity network
+
+```{python}
+g = network(sim, keep_top=0.6)
+city_network(g, cl.to_dict(), "network")
+```
+
+![City similarity network](../figs/network.png)
+
+## What each group looks like
+
+```{python}
+cluster_radars(cluster_profiles(rank_zscore, cl), "cluster_radars")
+```
+
+![Cluster profiles](../figs/cluster_radars.png)
+
+The cluster profiles name the groups: one leans on finance and corporate services,
+another on manufacturing and logistics, another on public administration. Cities land in
+a group by what they specialise in, not by which country they belong to.

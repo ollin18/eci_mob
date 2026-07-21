@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Quarto
+*.qmd.cache/
+/.quarto/
+src/*_files/
+src/*.html
+
+# Environments
+.env
+.venv/
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Assistant artifacts (never track)
+.claude/
+CLAUDE.md
+**/CLAUDE.md

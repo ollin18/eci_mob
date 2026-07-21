@@ -1,0 +1,487 @@
+city,naics,mean_eci_zscore,clean_city_name,country
+nyc,Financial,1.7607713403701348,NYC,US
+nyc,Professional Service,1.6901787996301232,NYC,US
+nyc,Corporate,1.623307262020213,NYC,US
+nyc,Information,1.6129258588988944,NYC,US
+nyc,Art/Culture,1.483567305329993,NYC,US
+nyc,Business Support,1.3558880400967477,NYC,US
+nyc,Real Estate,1.3355057033950624,NYC,US
+chicago,Professional Service,1.2011002153183177,Chicago,US
+nyc,Hospitality,1.1479051591159548,NYC,US
+chicago,Financial,1.080289238231973,Chicago,US
+houston,Professional Service,1.0647774140846673,Houston,US
+houston,Corporate,1.0545016953080493,Houston,US
+nyc,Manufacturing,0.9865395494612644,NYC,US
+chicago,Corporate,0.9582045430882784,Chicago,US
+nyc,Wholesale,0.957353078988924,NYC,US
+chicago,Real Estate,0.9564924414774924,Chicago,US
+nyc,Public Administration,0.9416101307469902,NYC,US
+chicago,Information,0.9411415000446888,Chicago,US
+dc_baltimore,Professional Service,0.9263576608729448,DC - Baltimore,US
+houston,Health,0.8906947931454369,Houston,US
+nyc,Education,0.8671393965779945,NYC,US
+dc_baltimore,Information,0.8592676633142451,DC - Baltimore,US
+houston,Financial,0.8519057780528106,Houston,US
+dc_baltimore,Public Administration,0.8507532601559277,DC - Baltimore,US
+nyc,Retail,0.8478890281226303,NYC,US
+nyc,Agriculture,0.8350491736649193,NYC,US
+houston,Education,0.8342845516291472,Houston,US
+bay,Information,0.7852978601890583,Bay Area,US
+dc_baltimore,Corporate,0.7720261171455884,DC - Baltimore,US
+dc_baltimore,Financial,0.7636072184702691,DC - Baltimore,US
+houston,Energy,0.755168380368017,Houston,US
+bay,Professional Service,0.7503832908028495,Bay Area,US
+houston,Real Estate,0.7475914584709571,Houston,US
+boston,Professional Service,0.7473977026580007,Boston,US
+dc_baltimore,Real Estate,0.7418944444458622,DC - Baltimore,US
+chicago,Education,0.7378468607410835,Chicago,US
+nyc,Construction,0.7279185030998586,NYC,US
+boston,Corporate,0.7231291540388176,Boston,US
+houston,Information,0.7144944668128593,Houston,US
+chicago,Art/Culture,0.6840371733882785,Chicago,US
+boston,Education,0.6793270765878219,Boston,US
+boston,Information,0.6759926113010466,Boston,US
+chicago,Business Support,0.6729884706903951,Chicago,US
+bay,Corporate,0.670299825007448,Bay Area,US
+dc_baltimore,Art/Culture,0.6676590986907014,DC - Baltimore,US
+nyc,Health,0.6641928085103962,NYC,US
+dc_baltimore,Business Support,0.6532732391370898,DC - Baltimore,US
+chicago,Health,0.6440404014575468,Chicago,US
+houston,Art/Culture,0.640425607676664,Houston,US
+boston,Financial,0.6396361596122438,Boston,US
+houston,Public Administration,0.6352441718134559,Houston,US
+bay,Manufacturing,0.634468844822787,Bay Area,US
+boston,Real Estate,0.6330010209958191,Boston,US
+nyc,Energy,0.6183253381068536,NYC,US
+chicago,Public Administration,0.5992449561880341,Chicago,US
+dc_baltimore,Education,0.5720056780124748,DC - Baltimore,US
+houston,Business Support,0.5720026571754356,Houston,US
+boston,Health,0.5611594084407985,Boston,US
+chicago,Hospitality,0.5405298306067294,Chicago,US
+boston,Art/Culture,0.5401177802222681,Boston,US
+boston,Business Support,0.5374385498464603,Boston,US
+bay,Financial,0.5328043090901655,Bay Area,US
+bay,Real Estate,0.529567563695252,Bay Area,US
+dc_baltimore,Hospitality,0.5239517697362872,DC - Baltimore,US
+dc_baltimore,Health,0.508369501763175,DC - Baltimore,US
+la,Information,0.4592119850998757,Los Angeles,US
+nyc,Transportation,0.4497718429402237,NYC,US
+boston,Manufacturing,0.449701633783882,Boston,US
+houston,Hospitality,0.4432707011999294,Houston,US
+la,Professional Service,0.4380322116486704,Los Angeles,US
+boston,Hospitality,0.4323601519871585,Boston,US
+houston,Agriculture,0.4233255775658354,Houston,US
+boston,Agriculture,0.4202872542294696,Boston,US
+chicago,Wholesale,0.4072230731934737,Chicago,US
+boston,Public Administration,0.3970599267154386,Boston,US
+bay,Business Support,0.3960736861430445,Bay Area,US
+boston,Energy,0.3818951052606718,Boston,US
+bay,Education,0.3742818260765763,Bay Area,US
+dc_baltimore,Manufacturing,0.3724284142070588,DC - Baltimore,US
+chicago,Agriculture,0.3680912107110382,Chicago,US
+la,Corporate,0.35573107334408,Los Angeles,US
+dc_baltimore,Energy,0.3511864587871816,DC - Baltimore,US
+houston,Wholesale,0.3481751679892225,Houston,US
+dc_baltimore,Agriculture,0.3449008029713524,DC - Baltimore,US
+chicago,Retail,0.3247943417862141,Chicago,US
+boston,Wholesale,0.3080662871273925,Boston,US
+bay,Art/Culture,0.3074846629917596,Bay Area,US
+boston,Retail,0.3004243917267017,Boston,US
+miami,Professional Service,0.2975026240221707,Miami,US
+chicago,Energy,0.2966310808290888,Chicago,US
+dc_baltimore,Construction,0.2943086389491182,DC - Baltimore,US
+la,Real Estate,0.2888130458918915,Los Angeles,US
+dc_baltimore,Retail,0.2688211509093191,DC - Baltimore,US
+chicago,Construction,0.2660805521427727,Chicago,US
+miami,Corporate,0.2529753112195305,Miami,US
+bay,Public Administration,0.2495583991763699,Bay Area,US
+bay,Health,0.2494801647856368,Bay Area,US
+bay,Hospitality,0.2410071951764711,Bay Area,US
+la,Financial,0.2330210748406499,Los Angeles,US
+la,Art/Culture,0.2100992761696763,Los Angeles,US
+bay,Wholesale,0.2084679570684722,Bay Area,US
+boston,Construction,0.1991314131602706,Boston,US
+bay,Retail,0.1901155612777762,Bay Area,US
+bay,Energy,0.1899743263581972,Bay Area,US
+dc_baltimore,Wholesale,0.1899092666968531,DC - Baltimore,US
+chicago,Transportation,0.1879656121681879,Chicago,US
+chicago,Manufacturing,0.1709627965170557,Chicago,US
+houston,Manufacturing,0.1670442264445823,Houston,US
+houston,Construction,0.1655176920678794,Houston,US
+dc_baltimore,Transportation,0.1591286258111404,DC - Baltimore,US
+miami,Financial,0.1383122404975438,Miami,US
+boston,Transportation,0.1369747169130252,Boston,US
+houston,Retail,0.1368099065645712,Houston,US
+miami,Information,0.1238809646306915,Miami,US
+miami,Real Estate,0.1182530620594335,Miami,US
+bay,Agriculture,0.1030552152144609,Bay Area,US
+phoenix,Corporate,0.0996290157404081,Phoenix,US
+houston,Transportation,0.0982336693053282,Houston,US
+phoenix,Professional Service,0.0969148265909014,Phoenix,US
+bay,Transportation,0.0864166339080428,Bay Area,US
+bay,Construction,0.0366258582492705,Bay Area,US
+la,Education,0.0195875956313202,Los Angeles,US
+la,Business Support,0.0148173841551947,Los Angeles,US
+phoenix,Real Estate,0.0109149140266741,Phoenix,US
+phoenix,Financial,0.0007799652117902,Phoenix,US
+miami,Hospitality,-0.0120219180931668,Miami,US
+miami,Art/Culture,-0.015490614892567,Miami,US
+phoenix,Information,-0.02355718385824,Phoenix,US
+miami,Education,-0.0352127698967627,Miami,US
+la,Public Administration,-0.0579480528170328,Los Angeles,US
+la,Hospitality,-0.066702849243258,Los Angeles,US
+la,Health,-0.0682317316096506,Los Angeles,US
+miami,Public Administration,-0.0785139096338756,Miami,US
+phoenix,Art/Culture,-0.0841467503346545,Phoenix,US
+miami,Health,-0.087954440534623,Miami,US
+phoenix,Health,-0.1341685554648826,Phoenix,US
+miami,Business Support,-0.1401831920700521,Miami,US
+phoenix,Education,-0.1459634231525329,Phoenix,US
+miami,Wholesale,-0.1612070503282678,Miami,US
+miami,Retail,-0.1820300773420058,Miami,US
+miami,Energy,-0.185116572319728,Miami,US
+phoenix,Hospitality,-0.198233658756187,Phoenix,US
+phoenix,Business Support,-0.2097727305444212,Phoenix,US
+phoenix,Wholesale,-0.2105039515974124,Phoenix,US
+la,Construction,-0.2148262672188724,Los Angeles,US
+phoenix,Manufacturing,-0.215672879631005,Phoenix,US
+miami,Manufacturing,-0.2182409696557596,Miami,US
+la,Retail,-0.235502000826383,Los Angeles,US
+phoenix,Public Administration,-0.2478155436075859,Phoenix,US
+phoenix,Agriculture,-0.2579462931996595,Phoenix,US
+miami,Transportation,-0.2580543951918017,Miami,US
+phoenix,Energy,-0.2672140449893054,Phoenix,US
+la,Agriculture,-0.2725697211155163,Los Angeles,US
+miami,Agriculture,-0.2746848131718809,Miami,US
+miami,Construction,-0.2887898615436933,Miami,US
+la,Energy,-0.2909345624334974,Los Angeles,US
+phoenix,Retail,-0.3242722419882798,Phoenix,US
+la,Wholesale,-0.3418813234357492,Los Angeles,US
+la,Transportation,-0.392051356157575,Los Angeles,US
+phoenix,Transportation,-0.3970396000143252,Phoenix,US
+phoenix,Construction,-0.3987364861909436,Phoenix,US
+la,Manufacturing,-0.4278753138732734,Los Angeles,US
+mexico_city,Professional Service,1.5236551044425874,Mexico City,MX
+guadalajara,Corporate,1.4972278993223764,Guadalajara,MX
+mexico_city,Corporate,1.4597315173929375,Mexico City,MX
+mexico_city,Construction,1.425549528848321,Mexico City,MX
+mexico_city,Information,1.2695091022498497,Mexico City,MX
+mexico_city,Financial,1.2378596879945292,Mexico City,MX
+mexico_city,Business Support,1.2149721523542514,Mexico City,MX
+puebla,Corporate,1.101577332278733,Puebla,MX
+monterrey,Professional Service,1.0538305765360267,Monterrey,MX
+monterrey,Corporate,1.037635352545467,Monterrey,MX
+tijuana,Corporate,0.9710023744341884,Tijuana,MX
+puebla,Professional Service,0.9293730468488812,Puebla,MX
+puebla,Construction,0.8980517515085726,Puebla,MX
+guadalajara,Construction,0.8970584729360065,Guadalajara,MX
+monterrey,Financial,0.8942453097569995,Monterrey,MX
+puebla,Information,0.8904512110367186,Puebla,MX
+puebla,Financial,0.8817776707122549,Puebla,MX
+guadalajara,Professional Service,0.8705315598086955,Guadalajara,MX
+mexico_city,Real Estate,0.8601920366552294,Mexico City,MX
+monterrey,Construction,0.8084102818991904,Monterrey,MX
+puebla,Business Support,0.8079256447866094,Puebla,MX
+monterrey,Business Support,0.807811082423757,Monterrey,MX
+monterrey,Real Estate,0.7324852953410009,Monterrey,MX
+monterrey,Health,0.7088643619060547,Monterrey,MX
+puebla,Public Administration,0.7053459209145092,Puebla,MX
+mexico_city,Public Administration,0.6859370082361909,Mexico City,MX
+monterrey,Information,0.6832332293292124,Monterrey,MX
+mexico_city,Art/Culture,0.6831784328837892,Mexico City,MX
+monterrey,Art/Culture,0.6470995599772005,Monterrey,MX
+puebla,Health,0.6413945354711716,Puebla,MX
+mexico_city,Energy,0.6206857883558137,Mexico City,MX
+puebla,Art/Culture,0.6090633265955214,Puebla,MX
+guadalajara,Business Support,0.5988446418238728,Guadalajara,MX
+mexico_city,Wholesale,0.5943510450402774,Mexico City,MX
+puebla,Energy,0.580211763060324,Puebla,MX
+monterrey,Energy,0.5801010041069831,Monterrey,MX
+puebla,Real Estate,0.5099295323502097,Puebla,MX
+mexico_city,Hospitality,0.5093971604211753,Mexico City,MX
+puebla,Education,0.5086458140996641,Puebla,MX
+guadalajara,Information,0.5076822344999302,Guadalajara,MX
+guadalajara,Financial,0.4910922770795042,Guadalajara,MX
+guadalajara,Real Estate,0.4735897402953358,Guadalajara,MX
+monterrey,Hospitality,0.4624719347358361,Monterrey,MX
+mexico_city,Transportation,0.4541935284289394,Mexico City,MX
+puebla,Hospitality,0.4487492577002971,Puebla,MX
+mexico_city,Health,0.4446395287210406,Mexico City,MX
+tijuana,Professional Service,0.4301888376910454,Tijuana,MX
+toluca,Agriculture,0.4273197518482632,Toluca,MX
+guadalajara,Art/Culture,0.415695099328223,Guadalajara,MX
+guadalajara,Energy,0.4037605605497073,Guadalajara,MX
+monterrey,Public Administration,0.4023580408193237,Monterrey,MX
+tijuana,Construction,0.3534279956601744,Tijuana,MX
+toluca,Professional Service,0.3533288051256413,Toluca,MX
+monterrey,Education,0.3515309229912068,Monterrey,MX
+mexico_city,Education,0.344469060493966,Mexico City,MX
+monterrey,Wholesale,0.3300318341231537,Monterrey,MX
+toluca,Transportation,0.2723771312284178,Toluca,MX
+monterrey,Retail,0.2664126220237104,Monterrey,MX
+toluca,Education,0.2655650703080097,Toluca,MX
+guadalajara,Health,0.2619192149733609,Guadalajara,MX
+toluca,Financial,0.25890464598654,Toluca,MX
+guadalajara,Wholesale,0.2481717640926428,Guadalajara,MX
+toluca,Public Administration,0.2456760343643123,Toluca,MX
+toluca,Business Support,0.2338912678609674,Toluca,MX
+toluca,Health,0.2319539413951151,Toluca,MX
+tijuana,Art/Culture,0.2205187298859534,Tijuana,MX
+toluca,Information,0.2158590662958011,Toluca,MX
+toluca,Wholesale,0.2121932448115768,Toluca,MX
+puebla,Wholesale,0.2097451064721873,Puebla,MX
+monterrey,Agriculture,0.2036600342598428,Monterrey,MX
+tijuana,Business Support,0.2010288838313683,Tijuana,MX
+puebla,Retail,0.1991239032137512,Puebla,MX
+tijuana,Financial,0.1970572676898718,Tijuana,MX
+guadalajara,Hospitality,0.1852625837132808,Guadalajara,MX
+tijuana,Real Estate,0.1767754740829052,Tijuana,MX
+toluca,Hospitality,0.1639615911631725,Toluca,MX
+monterrey,Transportation,0.158644963561554,Monterrey,MX
+tijuana,Health,0.1197761335377421,Tijuana,MX
+toluca,Construction,0.1067906024765717,Toluca,MX
+mexico_city,Agriculture,0.1025119207473961,Mexico City,MX
+mexico_city,Manufacturing,0.0797797335514046,Mexico City,MX
+toluca,Art/Culture,0.0580064169866945,Toluca,MX
+toluca,Real Estate,0.0483970997635392,Toluca,MX
+tijuana,Information,0.0382728349387112,Tijuana,MX
+tijuana,Education,0.037736040554898,Tijuana,MX
+toluca,Retail,0.0201389274431507,Toluca,MX
+tijuana,Hospitality,0.0181956744013991,Tijuana,MX
+toluca,Corporate,0.0174713169868778,Toluca,MX
+mexico_city,Retail,0.0141449571815659,Mexico City,MX
+tijuana,Wholesale,0.0044181895231638,Tijuana,MX
+guadalajara,Transportation,0.0017686895015669,Guadalajara,MX
+puebla,Transportation,-0.0132199815209653,Puebla,MX
+toluca,Manufacturing,-0.0190882034038242,Toluca,MX
+tijuana,Public Administration,-0.0209353134299632,Tijuana,MX
+guadalajara,Education,-0.0222254175536404,Guadalajara,MX
+tijuana,Manufacturing,-0.0305300192970875,Tijuana,MX
+monterrey,Manufacturing,-0.0556480473708104,Monterrey,MX
+guadalajara,Public Administration,-0.0569590313257799,Guadalajara,MX
+tijuana,Transportation,-0.0574910377499208,Tijuana,MX
+guadalajara,Manufacturing,-0.0666848100262718,Guadalajara,MX
+guadalajara,Retail,-0.0827479118265774,Guadalajara,MX
+guadalajara,Agriculture,-0.100492519871663,Guadalajara,MX
+puebla,Manufacturing,-0.1018812695660544,Puebla,MX
+tijuana,Retail,-0.114020322921891,Tijuana,MX
+toluca,Energy,-0.1403107693813176,Toluca,MX
+tijuana,Agriculture,-0.1506541423423586,Tijuana,MX
+puebla,Agriculture,-0.3122359038205515,Puebla,MX
+tijuana,Energy,-0.4709239338055678,Tijuana,MX
+sao_paulo,Financial,1.2717014784234315,Sao Paulo,BR
+belo_horizonte,Health,1.1352599930660396,Belo Horizonte,BR
+sao_paulo,Professional Service,1.1218937038615784,Sao Paulo,BR
+rio_de_janeiro,Art/Culture,1.1137756823985312,Rio De Janeiro,BR
+rio_de_janeiro,Financial,1.112918299532702,Rio De Janeiro,BR
+brasilia,Public Administration,1.1066150361408251,Brasilia,BR
+rio_de_janeiro,Hospitality,1.0840256337419876,Rio De Janeiro,BR
+salvador,Health,1.055803603031744,Salvador,BR
+sao_paulo,Real Estate,1.0424317070218625,Sao Paulo,BR
+belo_horizonte,Real Estate,1.0404689711989972,Belo Horizonte,BR
+belo_horizonte,Financial,1.0343424871513018,Belo Horizonte,BR
+sao_paulo,Public Administration,1.0288270126883776,Sao Paulo,BR
+belo_horizonte,Professional Service,1.0262924132250846,Belo Horizonte,BR
+sao_paulo,Information,1.02443630740347,Sao Paulo,BR
+sao_paulo,Health,1.0145238269252117,Sao Paulo,BR
+rio_de_janeiro,Professional Service,0.9942629869023848,Rio De Janeiro,BR
+rio_de_janeiro,Health,0.9742444726404402,Rio De Janeiro,BR
+rio_de_janeiro,Real Estate,0.964463583333208,Rio De Janeiro,BR
+sao_paulo,Art/Culture,0.9477115905734438,Sao Paulo,BR
+belo_horizonte,Information,0.9434072158026242,Belo Horizonte,BR
+rio_de_janeiro,Information,0.926595316074006,Rio De Janeiro,BR
+rio_de_janeiro,Education,0.9203583641137516,Rio De Janeiro,BR
+brasilia,Art/Culture,0.8810347537883197,Brasilia,BR
+belo_horizonte,Education,0.8781734188574697,Belo Horizonte,BR
+salvador,Art/Culture,0.8749726782492694,Salvador,BR
+sao_paulo,Hospitality,0.8691251925857647,Sao Paulo,BR
+salvador,Education,0.8612169751151101,Salvador,BR
+sao_paulo,Education,0.8376960298037273,Sao Paulo,BR
+sao_paulo,Business Support,0.8156988425986919,Sao Paulo,BR
+rio_de_janeiro,Public Administration,0.8028180342151298,Rio De Janeiro,BR
+belo_horizonte,Art/Culture,0.7958271153000138,Belo Horizonte,BR
+brasilia,Financial,0.7903958139954753,Brasilia,BR
+rio_de_janeiro,Agriculture,0.7629396341489888,Rio De Janeiro,BR
+brasilia,Professional Service,0.7303736676994158,Brasilia,BR
+rio_de_janeiro,Construction,0.7168888311948569,Rio De Janeiro,BR
+fortaleza,Education,0.7146284126468323,Fortaleza,BR
+belo_horizonte,Business Support,0.7015741849573482,Belo Horizonte,BR
+belo_horizonte,Construction,0.7013017190109991,Belo Horizonte,BR
+brasilia,Agriculture,0.6965146232160001,Brasilia,BR
+salvador,Corporate,0.6955888350587148,Salvador,BR
+brasilia,Business Support,0.6891757338546517,Brasilia,BR
+brasilia,Health,0.6826605105220971,Brasilia,BR
+salvador,Retail,0.6751388037024618,Salvador,BR
+sao_paulo,Wholesale,0.6687514525944457,Sao Paulo,BR
+brasilia,Real Estate,0.6656904487141767,Brasilia,BR
+sao_paulo,Corporate,0.6636183426057071,Sao Paulo,BR
+salvador,Real Estate,0.6622561418895123,Salvador,BR
+rio_de_janeiro,Wholesale,0.6520147785991228,Rio De Janeiro,BR
+sao_paulo,Construction,0.6340723025023198,Sao Paulo,BR
+salvador,Wholesale,0.6219622890917069,Salvador,BR
+rio_de_janeiro,Retail,0.6212269061849898,Rio De Janeiro,BR
+salvador,Business Support,0.6206189304721195,Salvador,BR
+rio_de_janeiro,Business Support,0.6202067305247768,Rio De Janeiro,BR
+belo_horizonte,Wholesale,0.6201982633820586,Belo Horizonte,BR
+brasilia,Information,0.6157887328957196,Brasilia,BR
+salvador,Professional Service,0.6139366779191304,Salvador,BR
+salvador,Information,0.5936013293267881,Salvador,BR
+brasilia,Wholesale,0.5729707640582238,Brasilia,BR
+salvador,Financial,0.572515276423023,Salvador,BR
+brasilia,Retail,0.5652902573931078,Brasilia,BR
+belo_horizonte,Transportation,0.5644715112090394,Belo Horizonte,BR
+salvador,Construction,0.5611835836468502,Salvador,BR
+sao_paulo,Retail,0.5585235885866467,Sao Paulo,BR
+brasilia,Construction,0.5538192769725002,Brasilia,BR
+sao_paulo,Energy,0.5488491010679858,Sao Paulo,BR
+brasilia,Education,0.5478802579300215,Brasilia,BR
+sao_paulo,Manufacturing,0.5467971412817966,Sao Paulo,BR
+brasilia,Hospitality,0.5309994128820963,Brasilia,BR
+belo_horizonte,Retail,0.5293827827371221,Belo Horizonte,BR
+rio_de_janeiro,Transportation,0.5172610662374979,Rio De Janeiro,BR
+brasilia,Manufacturing,0.5102772410132024,Brasilia,BR
+brasilia,Transportation,0.5093678178267067,Brasilia,BR
+salvador,Transportation,0.501509356416711,Salvador,BR
+rio_de_janeiro,Corporate,0.4950368804949116,Rio De Janeiro,BR
+fortaleza,Health,0.4930233712506762,Fortaleza,BR
+sao_paulo,Agriculture,0.4844694230356484,Sao Paulo,BR
+fortaleza,Business Support,0.4793032528882431,Fortaleza,BR
+sao_paulo,Transportation,0.4717232693960115,Sao Paulo,BR
+belo_horizonte,Hospitality,0.4664110399262485,Belo Horizonte,BR
+belo_horizonte,Corporate,0.4573833832607287,Belo Horizonte,BR
+fortaleza,Real Estate,0.4509076573559938,Fortaleza,BR
+fortaleza,Public Administration,0.4475560110169818,Fortaleza,BR
+fortaleza,Financial,0.4342507587022883,Fortaleza,BR
+brasilia,Energy,0.4176453224308075,Brasilia,BR
+rio_de_janeiro,Manufacturing,0.4042710453684353,Rio De Janeiro,BR
+fortaleza,Corporate,0.3822584104162158,Fortaleza,BR
+fortaleza,Construction,0.3625760054440281,Fortaleza,BR
+brasilia,Corporate,0.3602457685917634,Brasilia,BR
+fortaleza,Information,0.3600440569334074,Fortaleza,BR
+fortaleza,Wholesale,0.3580134656153279,Fortaleza,BR
+salvador,Agriculture,0.3342202592463936,Salvador,BR
+salvador,Manufacturing,0.3282279261079917,Salvador,BR
+fortaleza,Professional Service,0.3255937264599056,Fortaleza,BR
+fortaleza,Retail,0.2516935728176651,Fortaleza,BR
+belo_horizonte,Manufacturing,0.242740298500596,Belo Horizonte,BR
+fortaleza,Art/Culture,0.2401744458358806,Fortaleza,BR
+rio_de_janeiro,Energy,0.2357668694661904,Rio De Janeiro,BR
+fortaleza,Transportation,0.2297457892204786,Fortaleza,BR
+belo_horizonte,Public Administration,0.2259561202967346,Belo Horizonte,BR
+belo_horizonte,Energy,0.2143063233810746,Belo Horizonte,BR
+salvador,Energy,0.1996275201422787,Salvador,BR
+salvador,Hospitality,0.1722958367659768,Salvador,BR
+fortaleza,Hospitality,0.1487408810230757,Fortaleza,BR
+fortaleza,Manufacturing,0.1177301698460723,Fortaleza,BR
+salvador,Public Administration,0.1142542549100393,Salvador,BR
+belo_horizonte,Agriculture,0.0845928371735541,Belo Horizonte,BR
+fortaleza,Energy,0.0302219859515158,Fortaleza,BR
+fortaleza,Agriculture,-0.188875537680922,Fortaleza,BR
+cordoba,Public Administration,2.3900750338762267,Cordoba,AR
+cordoba,Corporate,2.167460488381647,Cordoba,AR
+cordoba,Real Estate,2.1238856048704404,Cordoba,AR
+cordoba,Financial,2.1060520635595377,Cordoba,AR
+cordoba,Professional Service,1.912458818695561,Cordoba,AR
+cordoba,Health,1.907527194384981,Cordoba,AR
+cordoba,Hospitality,1.7833522415417131,Cordoba,AR
+buenos_aires,Real Estate,1.775980420599686,Buenos Aires,AR
+rosario,Financial,1.754588201329509,Rosario,AR
+buenos_aires,Financial,1.7131905117971873,Buenos Aires,AR
+buenos_aires,Agriculture,1.7103137321728283,Buenos Aires,AR
+buenos_aires,Information,1.691725931695048,Buenos Aires,AR
+buenos_aires,Corporate,1.679794449767664,Buenos Aires,AR
+buenos_aires,Professional Service,1.6403257202406674,Buenos Aires,AR
+rosario,Real Estate,1.612982612415624,Rosario,AR
+la_plata,Real Estate,1.5939134904956207,La Plata,AR
+rosario,Health,1.5602899118121598,Rosario,AR
+buenos_aires,Hospitality,1.53507014535319,Buenos Aires,AR
+rosario,Information,1.5128806534407684,Rosario,AR
+cordoba,Information,1.5051379407068814,Cordoba,AR
+rosario,Hospitality,1.5012485642093096,Rosario,AR
+cordoba,Art/Culture,1.499766579266879,Cordoba,AR
+rosario,Public Administration,1.4948063940778022,Rosario,AR
+rosario,Corporate,1.4725249818955424,Rosario,AR
+la_plata,Financial,1.4392619882491386,La Plata,AR
+buenos_aires,Public Administration,1.430151549958161,Buenos Aires,AR
+buenos_aires,Health,1.4288193587439586,Buenos Aires,AR
+la_plata,Information,1.354270880461233,La Plata,AR
+la_plata,Hospitality,1.347843505237836,La Plata,AR
+la_plata,Corporate,1.3367301212814993,La Plata,AR
+cordoba,Business Support,1.3287511707989108,Cordoba,AR
+buenos_aires,Business Support,1.3225954015680477,Buenos Aires,AR
+buenos_aires,Art/Culture,1.3158278755954884,Buenos Aires,AR
+rosario,Art/Culture,1.3111189879225753,Rosario,AR
+rosario,Professional Service,1.2805237995839738,Rosario,AR
+la_plata,Health,1.2764893145606595,La Plata,AR
+rosario,Business Support,1.2282921248329317,Rosario,AR
+cordoba,Retail,1.2234426823619224,Cordoba,AR
+la_plata,Public Administration,1.1984352034919643,La Plata,AR
+cordoba,Agriculture,1.103300253001589,Cordoba,AR
+cordoba,Wholesale,1.1004418246299814,Cordoba,AR
+cordoba,Education,1.0931553132038705,Cordoba,AR
+cordoba,Construction,1.0890910947013794,Cordoba,AR
+buenos_aires,Construction,1.0839177299034155,Buenos Aires,AR
+buenos_aires,Wholesale,1.067699672294517,Buenos Aires,AR
+rosario,Agriculture,1.0520550681167329,Rosario,AR
+buenos_aires,Energy,1.0369881530824083,Buenos Aires,AR
+la_plata,Education,1.0258021824269452,La Plata,AR
+buenos_aires,Retail,0.9974422156012442,Buenos Aires,AR
+rosario,Education,0.9920059624705578,Rosario,AR
+rosario,Retail,0.9849839028344594,Rosario,AR
+san_miguel_de_tucuman,Public Administration,0.9843169878803276,San Miguel De Tucuman,AR
+buenos_aires,Education,0.9771587237242356,Buenos Aires,AR
+san_miguel_de_tucuman,Financial,0.9438168688197964,San Miguel De Tucuman,AR
+rosario,Wholesale,0.9140890068355172,Rosario,AR
+la_plata,Retail,0.9024508334324136,La Plata,AR
+la_plata,Business Support,0.8993803381463551,La Plata,AR
+mendoza,Information,0.8867686642914316,Mendoza,AR
+san_miguel_de_tucuman,Hospitality,0.878625561191628,San Miguel De Tucuman,AR
+mendoza,Professional Service,0.8729635861566353,Mendoza,AR
+san_miguel_de_tucuman,Health,0.8689492284417316,San Miguel De Tucuman,AR
+la_plata,Agriculture,0.866457253758067,La Plata,AR
+la_plata,Art/Culture,0.8613075664604549,La Plata,AR
+san_miguel_de_tucuman,Corporate,0.8548823617138709,San Miguel De Tucuman,AR
+la_plata,Wholesale,0.8542824378580937,La Plata,AR
+mendoza,Real Estate,0.839960834152311,Mendoza,AR
+mendoza,Health,0.8378331891084231,Mendoza,AR
+mendoza,Financial,0.8054334727646335,Mendoza,AR
+mendoza,Education,0.7963659495113362,Mendoza,AR
+buenos_aires,Transportation,0.7962829640091544,Buenos Aires,AR
+la_plata,Professional Service,0.7948385326446655,La Plata,AR
+san_miguel_de_tucuman,Information,0.7914973669489174,San Miguel De Tucuman,AR
+mendoza,Hospitality,0.7782629834142013,Mendoza,AR
+san_miguel_de_tucuman,Professional Service,0.7768023209753322,San Miguel De Tucuman,AR
+rosario,Construction,0.7732358519572275,Rosario,AR
+san_miguel_de_tucuman,Real Estate,0.7697193978136686,San Miguel De Tucuman,AR
+san_miguel_de_tucuman,Retail,0.7583201446337289,San Miguel De Tucuman,AR
+mendoza,Art/Culture,0.7470107289268778,Mendoza,AR
+cordoba,Transportation,0.7178586431831305,Cordoba,AR
+san_miguel_de_tucuman,Business Support,0.6765148180349957,San Miguel De Tucuman,AR
+san_miguel_de_tucuman,Education,0.6719267876866524,San Miguel De Tucuman,AR
+mendoza,Energy,0.6676922025446288,Mendoza,AR
+mendoza,Corporate,0.6666910638410126,Mendoza,AR
+san_miguel_de_tucuman,Art/Culture,0.6502483458205971,San Miguel De Tucuman,AR
+mendoza,Public Administration,0.6412133831227791,Mendoza,AR
+mendoza,Business Support,0.6377515062794505,Mendoza,AR
+san_miguel_de_tucuman,Wholesale,0.6269127263989804,San Miguel De Tucuman,AR
+san_miguel_de_tucuman,Energy,0.6134250732313798,San Miguel De Tucuman,AR
+mendoza,Construction,0.6105964142184332,Mendoza,AR
+buenos_aires,Manufacturing,0.5834415237303762,Buenos Aires,AR
+la_plata,Construction,0.5587288045217069,La Plata,AR
+san_miguel_de_tucuman,Agriculture,0.5560114377105815,San Miguel De Tucuman,AR
+cordoba,Energy,0.5357370057131099,Cordoba,AR
+san_miguel_de_tucuman,Construction,0.5355509223781982,San Miguel De Tucuman,AR
+mendoza,Wholesale,0.53232567794523,Mendoza,AR
+la_plata,Energy,0.5322268321989444,La Plata,AR
+mendoza,Retail,0.5032893403097516,Mendoza,AR
+san_miguel_de_tucuman,Transportation,0.5018280386723962,San Miguel De Tucuman,AR
+cordoba,Manufacturing,0.4929734941540847,Cordoba,AR
+rosario,Transportation,0.4903363686217505,Rosario,AR
+la_plata,Manufacturing,0.4761154141060734,La Plata,AR
+mendoza,Agriculture,0.4455298159658948,Mendoza,AR
+la_plata,Transportation,0.4167736063945393,La Plata,AR
+mendoza,Manufacturing,0.3346303015025824,Mendoza,AR
+mendoza,Transportation,0.3050478684663862,Mendoza,AR
+san_miguel_de_tucuman,Manufacturing,0.2605385200563962,San Miguel De Tucuman,AR
+rosario,Manufacturing,0.1926661512360156,Rosario,AR
+rosario,Energy,-0.2173739905934016,Rosario,AR

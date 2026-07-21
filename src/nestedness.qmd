@@ -1,0 +1,46 @@
+---
+title: "Nestedness of the complexity matrix"
+subtitle: "Do complex locations draw from a superset of the origins that feed simpler ones"
+author: "Ollin D. Langle-Chimal"
+date: today
+format:
+  html:
+    page-layout: full
+    toc: true
+    code-fold: true
+    theme: cosmo
+    html-math-method: katex
+jupyter: python3
+---
+
+## Setup
+
+The work location by education quantile matrix is binary once we mark, for each cell,
+the education bins it draws from more than its size would predict. If the structure is
+nested, the origins feeding a simple location are a subset of those feeding a complex
+one. We measure this with NODF and compare it to a null that preserves the number of
+active bins per location and per quantile.
+
+```{python}
+import os
+os.chdir("..")
+
+import pandas as pd
+
+from eci import load_panel, COUNTRIES, COUNTRY_NAME
+from nestedness import binary_matrix, nodf_significance
+
+rows = []
+for c in COUNTRIES:
+    b = binary_matrix(load_panel(c))
+    s = nodf_significance(b, n_null=19, seed=1)
+    s["country"] = COUNTRY_NAME[c]
+    rows.append(s)
+pd.DataFrame(rows)[["country", "nodf", "null_mean", "z", "p", "fill", "shape"]]
+```
+
+Every country is significantly more nested than its degree-preserving null. The matrices
+are not highly nested in absolute terms, but they are consistently ordered rather than
+random: complex destinations recruit across the whole education range, simpler ones from
+a narrowing subset near their own level. This is the structure that lets a single
+complexity axis summarise each location.
