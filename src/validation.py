@@ -22,17 +22,12 @@ def _wls_r2(x, y, w):
 # Metropolitan scale: city income vs mean ECI and vs education
 # ======================
 
-def city_table(city_eci: pd.DataFrame, income: pd.DataFrame) -> pd.DataFrame:
-    """Join per-city mean ECI to income and residential education."""
-    keys = ["country", "city"] if "country" in city_eci.columns else ["city"]
-    return city_eci.merge(income, on=keys, how="inner")
-
 
 def city_fits(city: pd.DataFrame) -> pd.DataFrame:
     """R2 and p for income against ECI and against education, by country."""
     rows = []
     for c, g in city.groupby("country"):
-        for pred, name in [("mean_eci", "eci"), ("education", "education")]:
+        for pred, name in [("eci", "eci"), ("education", "education")]:
             r, p = stats.pearsonr(g[pred], g["income"])
             rows.append(dict(country=c, predictor=name, r2=round(r ** 2, 3),
                              p=round(p, 3), sig=sig_stars(p), n=len(g)))

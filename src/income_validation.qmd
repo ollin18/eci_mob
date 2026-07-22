@@ -27,9 +27,9 @@ sys.path.insert(0, "src")
 
 import pandas as pd
 
-from eci import load_panel, location_eci, city_eci, COUNTRIES
-from data import load_city_income, load_origin_wealth, CITY_LABEL
-from validation import city_table, city_fits, subcity_fits, subcity_points
+
+from data import load_city_income, load_origin_wealth
+from validation import city_fits, subcity_fits, subcity_points
 from figures import style, city_income_panels, subcity_panels
 
 style()
@@ -62,16 +62,9 @@ national source reports natively, per capita for Argentina and Brazil, per house
 the United States and Mexico.
 
 ```{python}
-rows = []
-for c in COUNTRIES:
-    p = load_panel(c)
-    ce = city_eci(location_eci(p), p)
-    ce["country"] = c
-    rows.append(ce)
-city = city_table(pd.concat(rows, ignore_index=True), income)
-city_income_panels(city, "city_income")
-city_income_panels(city, "city_education", x="education", xlabel="Education rate")
-city_fits(city)
+city_income_panels(income, "city_income", x="eci")
+city_income_panels(income, "city_education", x="education", xlabel="Education rate")
+city_fits(income)
 ```
 
 ![City income against ECI](../figs/city_income.png)
