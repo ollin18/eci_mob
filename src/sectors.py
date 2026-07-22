@@ -26,9 +26,3 @@ def worker_weighted_sector_eci(workers: pd.DataFrame, eci: pd.DataFrame) -> pd.D
         sd = np.sqrt(np.average((x - m) ** 2, weights=w))
         rows.append(dict(sector=s, mean_eci=m, sem=sd / np.sqrt(len(g))))
     return pd.DataFrame(rows).sort_values("mean_eci", ascending=False).reset_index(drop=True)
-
-
-def dominant_sector(workers: pd.DataFrame) -> pd.DataFrame:
-    """The sector employing the most workers in each location."""
-    d = workers[workers["naics"].isin(SECTORS)]
-    return d.loc[d.groupby("geomid")["workers"].idxmax(), ["geomid", "naics"]]

@@ -171,44 +171,6 @@ def subcity_panels(points, fits, name):
 # Pipeline, one city (fig 1)
 # ======================
 
-def eci_map(eci, city, name):
-    """ECI over one city's work cells."""
-    from data import CITY_LABEL
-    d = eci[eci["city"] == city].dropna(subset=["eci"])
-    fig, ax = plt.subplots(figsize=(7, 7))
-    pc = PatchCollection(_hex_patches(d["geomid"]), cmap="magma", edgecolor="none")
-    pc.set_array(d["eci"].clip(*d["eci"].quantile([.01, .99])).values)
-    ax.add_collection(pc)
-    ax.autoscale_view()
-    ax.set_aspect("equal")
-    ax.axis("off")
-    ax.set_title(CITY_LABEL.get(city, city), fontweight="bold", fontsize=15)
-    fig.colorbar(pc, ax=ax, shrink=.6, label=ECI_MOB)
-    save(fig, name)
-
-
-def dominant_sector_map(dom, geomids, name, title):
-    """Work cells coloured by the sector that employs the most workers."""
-    d = dom[dom["geomid"].isin(set(geomids))]
-    sectors = sorted(d["naics"].unique())
-    cmap = plt.get_cmap("tab20", len(sectors))
-    idx = {s: i for i, s in enumerate(sectors)}
-    fig, ax = plt.subplots(figsize=(8, 7))
-    pc = PatchCollection(_hex_patches(d["geomid"]), cmap=cmap, edgecolor="none")
-    pc.set_array(np.array([idx[s] for s in d["naics"]]))
-    pc.set_clim(-.5, len(sectors) - .5)
-    ax.add_collection(pc)
-    ax.autoscale_view()
-    ax.set_aspect("equal")
-    ax.axis("off")
-    ax.set_title(title, fontweight="bold", fontsize=15)
-    handles = [plt.Line2D([], [], marker="s", ls="", color=cmap(i), label=s)
-               for s, i in idx.items()]
-    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1, .5),
-              fontsize=8, frameon=False)
-    save(fig, name)
-
-
 def sector_bar(ss, name):
     """Mean sectoral complexity, worker-weighted, highest to lowest."""
     fig, ax = plt.subplots(figsize=(7, 8))
@@ -231,50 +193,83 @@ def sector_bar(ss, name):
 
 def sector_heatmap(rank_mat, name, country_name):
     """City by sector rank of mean complexity, 1 = most complex."""
-    fig, ax = plt.subplots(figsize=(12, 4.2))
-    im = ax.imshow(rank_mat.values, cmap="RdBu", aspect="auto")
+    from data import CITY_LABEL
+    n = rank_mat.shape[0]
+    fig, ax = plt.subplots(figsize=(13, .55 * n + 2))
+    im = ax.imshow(rank_mat.values, cmap="RdBu", aspect="auto", vmin=1, vmax=rank_mat.shape[0])
     ax.set_xticks(range(rank_mat.shape[1]))
-    ax.set_xticklabels(rank_mat.columns, rotation=45, ha="right", fontsize=9)
-    ax.set_yticks(range(rank_mat.shape[0]))
-    ax.set_yticklabels(rank_mat.index, fontsize=11)
-    fig.colorbar(im, ax=ax, shrink=.8, label="Rank")
+    ax.set_xticklabels(rank_mat.columns, rotation=45, ha="right", fontsize=10)
+    ax.set_yticks(range(n))
+    ax.set_yticklabels([CITY_LABEL.get(c, c) for c in rank_mat.index], fontsize=12)
+    ax.set_xticks(np.arange(-.5, rank_mat.shape[1], 1), minor=True)
+    ax.set_yticks(np.arange(-.5, n, 1), minor=True)
+    ax.grid(which="minor", color="white", lw=2)
+    ax.tick_params(which="minor", size=0)
+    for s in ax.spines.values():
+        s.set_color("#bdc3c7")
+    fig.colorbar(im, ax=ax, shrink=.7, label="Rank")
     ax.set_title(f"Ranking of mean {ECI_SECT} - {country_name}", fontweight="bold")
     fig.tight_layout()
     save(fig, name)
 
 
-def _radar_axes(ax, sectors):
-    ang = np.linspace(0, 2 * np.pi, len(sectors), endpoint=False)
-    ax.set_xticks(ang)
-    ax.set_xticklabels(sectors, fontsize=8)
+COUNTRY_LIGHT = {"US": "#9db8f0", "MX": "#8fd6bf", "BR": "#f2c98a", "AR": "#c9aef0"}
+SHORT = {"Agriculture": "AGR", "Art/Culture": "A/C", "Business Support": "BUS",
+         "Construction": "CONST", "Corporate": "COR", "Education": "EDU", "Energy": "EN",
+         "Financial": "FIN", "Health": "HC", "Hospitality": "HOSP", "Information": "INF",
+         "Manufacturing": "MFG", "Professional Service": "PROF",
+         "Public Administration": "PA", "Real Estate": "RE", "Retail": "RET",
+         "Transportation": "TRAN", "Wholesale": "WHOLE"}
+
+
+def _radar(ax, sectors, values, sd, color, light, title):
+    """One paper-style radar: RCA wedges, plus/minus one SD band, country mean, markers."""
+    n = len(sectors)
+    ang = [i / n * 2 * np.pi for i in range(n)] + [0.0]
+    vals = np.asarray(values, float)
+    limit = max(2.0, np.ceil(np.nanmax(np.abs(vals)) * 10) / 10)
+    loop = np.r_[vals, vals[:1]]
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
-    return ang
+    wedge = 2 * np.pi / n
+    for i in range(n):
+        if vals[i] > 0:
+            ax.bar(ang[i], 2 * limit, bottom=-limit, width=wedge, color=light,
+                   alpha=.25, edgecolor="none", zorder=0)
+    ax.grid(color="#cccccc", lw=.8, alpha=.6)
+    ax.set_ylim(-limit - .15, limit + .15)
+    ax.set_yticks(np.linspace(-limit, limit, 5))
+    ax.set_yticklabels([f"{v:.1f}" for v in np.linspace(-limit, limit, 5)],
+                       color="#666", size=8)
+    ax.set_xticks(ang[:-1])
+    ax.set_xticklabels([SHORT.get(s, s) for s in sectors], fontsize=8)
+    up = np.r_[sd, sd[:1]]
+    ax.fill(np.r_[ang, ang[::-1]], np.r_[up, (-up)[::-1]], color="#888", alpha=.15, zorder=1)
+    ax.plot(ang, [0] * (n + 1), color="#555", ls="--", lw=1.5, dashes=(5, 3), zorder=2)
+    ax.plot(ang, loop, color=color, lw=2.5, zorder=3)
+    ax.fill(ang, loop, color=color, alpha=.2, zorder=2)
+    mark = [i for i in range(n) if vals[i] > sd[i]]
+    if mark:
+        ax.scatter([ang[i] for i in mark], [vals[i] for i in mark], s=90,
+                   facecolor="white", edgecolor=color, lw=2.5, zorder=4)
+    ax.set_title(title, size=14, y=1.14, fontweight="bold")
 
 
 def city_radars(rank_zscore, cities, name):
-    """City sector profile with the country mean and a plus/minus one SD band."""
+    """City sector profile against the country mean and its plus/minus one SD band."""
     from data import CITY_LABEL
-    fig, axes = plt.subplots(1, len(cities), figsize=(5 * len(cities), 5.2),
+    fig, axes = plt.subplots(1, len(cities), figsize=(5.2 * len(cities), 5.4),
                              subplot_kw=dict(polar=True))
     for ax, city in zip(np.atleast_1d(axes), cities):
         country = rank_zscore.loc[rank_zscore["city"] == city, "country"].iloc[0]
         cd = rank_zscore[rank_zscore["country"] == country]
         sectors = sorted(cd["sector"].unique())
-        ang = _radar_axes(ax, sectors)
-        loop = np.r_[ang, ang[:1]]
-        mean = cd.groupby("sector")["rank_zscore"].mean().reindex(sectors).values
-        sd = cd.groupby("sector")["rank_zscore"].std().reindex(sectors).values
-        ax.fill_between(loop, np.r_[mean - sd, mean[0] - sd[0]],
-                        np.r_[mean + sd, mean[0] + sd[0]], color="#cccccc", alpha=.4)
-        ax.plot(loop, np.r_[mean, mean[:1]], color="#555", ls="--", lw=1.2)
+        sd = cd.groupby("sector")["rank_zscore"].std(ddof=1).reindex(sectors).values
         v = (rank_zscore[rank_zscore["city"] == city].set_index("sector")["rank_zscore"]
              .reindex(sectors).values)
-        col = COUNTRY_COLOR[country]
-        ax.plot(loop, np.r_[v, v[:1]], color=col, lw=2.2)
-        ax.fill(loop, np.r_[v, v[:1]], color=col, alpha=.2)
-        ax.set_title(CITY_LABEL.get(city, city), fontweight="bold", pad=18)
-    fig.tight_layout()
+        _radar(ax, sectors, v, sd, COUNTRY_COLOR[country], COUNTRY_LIGHT[country],
+               CITY_LABEL.get(city, city))
+    fig.subplots_adjust(wspace=.5)
     save(fig, name)
 
 
@@ -384,26 +379,29 @@ def city_network(g, cl, name):
     nx.draw_networkx_nodes(g, pos, ax=ax, node_size=620,
                            node_color=[CLUSTER_COLOR[node2c[n]] for n in g.nodes],
                            edgecolors="#1a252f", linewidths=2)
-    for n, (x, y) in pos.items():
-        ax.text(x, y + .18, CITY_LABEL.get(n, n), ha="center", va="bottom", fontsize=9)
+    texts = [ax.text(x, y, CITY_LABEL.get(n, n), ha="center", va="center", fontsize=10)
+             for n, (x, y) in pos.items()]
+    try:
+        from adjustText import adjust_text
+        adjust_text(texts, ax=ax, expand=(1.3, 1.6),
+                    arrowprops=dict(arrowstyle="-", color="#bbb", lw=.5))
+    except Exception:
+        pass
     ax.axis("off")
-    ax.margins(.08)
+    ax.margins(.1)
     save(fig, name)
 
 
 def cluster_radars(profiles, name):
-    """Average sector profile per cluster."""
+    """Average sector profile per cluster against the cross-cluster mean and SD band."""
     sectors = sorted(profiles["sector"].unique())
     clusters = sorted(profiles["cluster"].unique())
-    fig, axes = plt.subplots(1, len(clusters), figsize=(4 * len(clusters), 4.4),
+    sd = profiles.groupby("sector")["mean_z"].std(ddof=1).reindex(sectors).values
+    fig, axes = plt.subplots(1, len(clusters), figsize=(5 * len(clusters), 5.2),
                              subplot_kw=dict(polar=True))
     for ax, cl in zip(np.atleast_1d(axes), clusters):
-        ang = _radar_axes(ax, sectors)
-        loop = np.r_[ang, ang[:1]]
         v = profiles[profiles["cluster"] == cl].set_index("sector")["mean_z"].reindex(sectors).values
         col = CLUSTER_COLOR[(cl - 1) % 6 + 1]
-        ax.plot(loop, np.r_[v, v[:1]], color=col, lw=2.2)
-        ax.fill(loop, np.r_[v, v[:1]], color=col, alpha=.25)
-        ax.set_title(f"Cluster {cl}", fontweight="bold", pad=15)
-    fig.tight_layout()
+        _radar(ax, sectors, v, sd, col, col, f"Cluster {cl}")
+    fig.subplots_adjust(wspace=.5)
     save(fig, name)

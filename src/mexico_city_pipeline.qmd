@@ -26,8 +26,8 @@ sys.path.insert(0, "src")
 
 from eci import load_panel, location_eci
 from data import load_mx_workers
-from sectors import worker_weighted_sector_eci, dominant_sector
-from figures import style, eci_map, dominant_sector_map, sector_bar
+from sectors import worker_weighted_sector_eci
+from figures import style, sector_bar
 
 style()
 
@@ -39,26 +39,19 @@ workers = load_mx_workers()
 
 ## Complexity across Mexico City
 
-```{python}
-eci_map(eci, "mexico_city", "pipeline_eci_map")
-```
-
 ![ECI over Mexico City](../figs/pipeline_eci_map.png)
 
-Complexity peaks along the Reforma and Polanco corridor and in the western business
-districts, and falls off toward the eastern and northern periphery.
+Mapping the rebuilt index over the metro, complexity peaks along the Reforma and Polanco
+corridor and the western business districts, and falls off toward the eastern and northern
+periphery. The downtown detail resolves the sharp gradient between neighbouring zones.
 
 ## Dominant sector
 
-```{python}
-dominant_sector_map(dominant_sector(workers), set(mx["geomid"]),
-                    "pipeline_dominant_sector", "Dominant sector, Mexico City")
-```
-
 ![Dominant sector](../figs/pipeline_dominant_sector.png)
 
-Retail blankets the residential periphery, manufacturing follows the industrial
-corridors, and the complex core carries the service and administrative sectors.
+Reading the sector that employs the most workers in each cell, retail blankets the
+residential periphery, manufacturing follows the industrial corridors, and the complex core
+carries the service and administrative sectors.
 
 ## Complexity by sector
 
