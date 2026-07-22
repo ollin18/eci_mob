@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import networkx as nx
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 from sklearn.metrics.pairwise import cosine_similarity
@@ -26,23 +25,6 @@ def clusters(sim: pd.DataFrame, k: int = 6) -> pd.Series:
     return pd.Series(fcluster(z, k, criterion="maxclust"), index=sim.index, name="cluster")
 
 
-def linkage_matrix(sim: pd.DataFrame):
-    d = 1 - sim.values
-    np.fill_diagonal(d, 0)
-    d = (d + d.T) / 2
-    return linkage(squareform(d, checks=False), method="complete")
-
-
-def network(sim: pd.DataFrame, keep_top: float = 0.6) -> nx.Graph:
-    """City graph keeping the strongest similarity edges."""
-    g = nx.Graph()
-    g.add_nodes_from(sim.index)
-    vals = sim.where(np.triu(np.ones(sim.shape), 1).astype(bool)).stack()
-    thresh = vals.quantile(keep_top)
-    for (a, b), w in vals.items():
-        if w >= thresh:
-            g.add_edge(a, b, weight=float(w))
-    return g
 
 
 def cluster_profiles(rank_zscore: pd.DataFrame, cl: pd.Series) -> pd.DataFrame:

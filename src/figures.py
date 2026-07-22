@@ -3,19 +3,15 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import networkx as nx
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
-from matplotlib.colors import Normalize, TwoSlopeNorm
+from matplotlib.colors import Normalize
 from scipy import stats
-from scipy.cluster.hierarchy import dendrogram
 
 FIG_DIR = "figs"
 LINE = "#E74C3C"
 COUNTRY_COLOR = {"US": "#2563eb", "MX": "#059669", "BR": "#d97706", "AR": "#7c3aed"}
 COUNTRY_NAME = {"US": "United States", "MX": "Mexico", "BR": "Brazil", "AR": "Argentina"}
-CLUSTER_COLOR = {1: "#be185d", 2: "#0f766e", 3: "#7c2d12",
-                 4: "#dc2626", 5: "#f59e0b", 6: "#6b21a8"}
 ECI_MOB = r"$\mathbf{ECI}^{\mathbf{mob}}$"
 ECI_SECT = r"$\mathbf{ECI}^{\mathbf{sect}}$"
 
@@ -213,66 +209,6 @@ def sector_heatmap(rank_mat, name, country_name):
     save(fig, name)
 
 
-COUNTRY_LIGHT = {"US": "#9db8f0", "MX": "#8fd6bf", "BR": "#f2c98a", "AR": "#c9aef0"}
-SHORT = {"Agriculture": "AGR", "Art/Culture": "A/C", "Business Support": "BUS",
-         "Construction": "CONST", "Corporate": "COR", "Education": "EDU", "Energy": "EN",
-         "Financial": "FIN", "Health": "HC", "Hospitality": "HOSP", "Information": "INF",
-         "Manufacturing": "MFG", "Professional Service": "PROF",
-         "Public Administration": "PA", "Real Estate": "RE", "Retail": "RET",
-         "Transportation": "TRAN", "Wholesale": "WHOLE"}
-
-
-def _radar(ax, sectors, values, sd, color, light, title):
-    """One paper-style radar: RCA wedges, plus/minus one SD band, country mean, markers."""
-    n = len(sectors)
-    ang = [i / n * 2 * np.pi for i in range(n)] + [0.0]
-    vals = np.asarray(values, float)
-    limit = max(2.0, np.ceil(np.nanmax(np.abs(vals)) * 10) / 10)
-    loop = np.r_[vals, vals[:1]]
-    ax.set_theta_offset(np.pi / 2)
-    ax.set_theta_direction(-1)
-    wedge = 2 * np.pi / n
-    for i in range(n):
-        if vals[i] > 0:
-            ax.bar(ang[i], 2 * limit, bottom=-limit, width=wedge, color=light,
-                   alpha=.25, edgecolor="none", zorder=0)
-    ax.grid(color="#cccccc", lw=.8, alpha=.6)
-    ax.set_ylim(-limit - .15, limit + .15)
-    ax.set_yticks(np.linspace(-limit, limit, 5))
-    ax.set_yticklabels([f"{v:.1f}" for v in np.linspace(-limit, limit, 5)],
-                       color="#666", size=8)
-    ax.set_xticks(ang[:-1])
-    ax.set_xticklabels([SHORT.get(s, s) for s in sectors], fontsize=8)
-    up = np.r_[sd, sd[:1]]
-    ax.fill(np.r_[ang, ang[::-1]], np.r_[up, (-up)[::-1]], color="#888", alpha=.15, zorder=1)
-    ax.plot(ang, [0] * (n + 1), color="#555", ls="--", lw=1.5, dashes=(5, 3), zorder=2)
-    ax.plot(ang, loop, color=color, lw=2.5, zorder=3)
-    ax.fill(ang, loop, color=color, alpha=.2, zorder=2)
-    mark = [i for i in range(n) if vals[i] > sd[i]]
-    if mark:
-        ax.scatter([ang[i] for i in mark], [vals[i] for i in mark], s=90,
-                   facecolor="white", edgecolor=color, lw=2.5, zorder=4)
-    ax.set_title(title, size=14, y=1.14, fontweight="bold")
-
-
-def city_radars(rank_zscore, cities, name):
-    """City sector profile against the country mean and its plus/minus one SD band."""
-    from data import CITY_LABEL
-    fig, axes = plt.subplots(1, len(cities), figsize=(5.2 * len(cities), 5.4),
-                             subplot_kw=dict(polar=True))
-    for ax, city in zip(np.atleast_1d(axes), cities):
-        country = rank_zscore.loc[rank_zscore["city"] == city, "country"].iloc[0]
-        cd = rank_zscore[rank_zscore["country"] == country]
-        sectors = sorted(cd["sector"].unique())
-        sd = cd.groupby("sector")["rank_zscore"].std(ddof=1).reindex(sectors).values
-        v = (rank_zscore[rank_zscore["city"] == city].set_index("sector")["rank_zscore"]
-             .reindex(sectors).values)
-        _radar(ax, sectors, v, sd, COUNTRY_COLOR[country], COUNTRY_LIGHT[country],
-               CITY_LABEL.get(city, city))
-    fig.subplots_adjust(wspace=.5)
-    save(fig, name)
-
-
 def specialization_dotplot(rank_zscore, name):
     """Each sector's cities on the rank z-score axis, coloured by country."""
     sectors = sorted(rank_zscore["sector"].unique())
@@ -315,93 +251,3 @@ def cosine_heatmap(sim, cl, name):
     fig.tight_layout()
     save(fig, name)
 
-
-def dendro(lmat, labels, cl, country, name):
-    """Circular dendrogram with cluster-coloured arcs and country-coloured leaves."""
-    from data import CITY_LABEL
-    d = dendrogram(lmat, labels=list(labels), no_plot=True,
-                   color_threshold=.7 * lmat[:, 2].max())
-    leaves = d["ivl"]
-    n = len(leaves)
-    ang = {leaf: 2 * np.pi * i / n for i, leaf in enumerate(leaves)}
-    fig, ax = plt.subplots(figsize=(9, 9), subplot_kw=dict(polar=True))
-    icoord = np.array(d["icoord"])
-    dcoord = np.array(d["dcoord"])
-    dmax = dcoord.max()
-    xmax = icoord.max()
-    for xs, ys, col in zip(icoord, dcoord, d["color_list"]):
-        theta = [x / xmax * 2 * np.pi for x in xs]
-        r = [dmax - y for y in ys]
-        ax.plot([theta[0], theta[1]], [r[0], r[1]], color=col, lw=2)
-        seg = np.linspace(theta[1], theta[2], 30)
-        ax.plot(seg, [r[1]] * 30, color=col, lw=2)
-        ax.plot([theta[2], theta[3]], [r[2], r[3]], color=col, lw=2)
-    for i, leaf in enumerate(leaves):
-        th = (2 * i + 1) / (2 * n) * 2 * np.pi
-        c = country.get(leaf, "US")
-        ax.scatter(th, dmax, s=90, color=COUNTRY_COLOR[c], edgecolor="#2c3e50", zorder=5)
-        ax.text(th, dmax * 1.12, CITY_LABEL.get(leaf, leaf),
-                rotation=np.degrees(th) - 90, ha="center", va="center", fontsize=8)
-    ax.set_axis_off()
-    ax.set_title("Hierarchical clustering", fontweight="bold", pad=20)
-    save(fig, name)
-
-
-def _forced_layout(g, cl):
-    node2c = {n: int(cl[n]) for n in g.nodes()}
-    clusters = sorted(set(node2c.values()))
-    centers = {c: (4 * np.cos(2 * np.pi * i / len(clusters) - np.pi / 2),
-                   4 * np.sin(2 * np.pi * i / len(clusters) - np.pi / 2))
-               for i, c in enumerate(clusters)}
-    by_c = {}
-    for n, c in node2c.items():
-        by_c.setdefault(c, []).append(n)
-    pos = {}
-    for c, nodes in by_c.items():
-        cx, cy = centers[c]
-        if len(nodes) == 1:
-            pos[nodes[0]] = (cx, cy)
-            continue
-        local = nx.spring_layout(g.subgraph(nodes), k=1.5, iterations=50, seed=42)
-        for n, (x, y) in local.items():
-            pos[n] = (cx + x * 1.2, cy + y * 1.2)
-    return pos, node2c
-
-
-def city_network(g, cl, name):
-    """Similarity network, nodes forced into cluster regions and coloured by cluster."""
-    from data import CITY_LABEL
-    pos, node2c = _forced_layout(g, cl)
-    fig, ax = plt.subplots(figsize=(11, 11), facecolor="white")
-    w = [g[u][v]["weight"] for u, v in g.edges]
-    nx.draw_networkx_edges(g, pos, ax=ax, width=[x * 2.5 for x in w],
-                           edge_color="#b0b0b0", alpha=.55)
-    nx.draw_networkx_nodes(g, pos, ax=ax, node_size=620,
-                           node_color=[CLUSTER_COLOR[node2c[n]] for n in g.nodes],
-                           edgecolors="#1a252f", linewidths=2)
-    texts = [ax.text(x, y, CITY_LABEL.get(n, n), ha="center", va="center", fontsize=10)
-             for n, (x, y) in pos.items()]
-    try:
-        from adjustText import adjust_text
-        adjust_text(texts, ax=ax, expand=(1.3, 1.6),
-                    arrowprops=dict(arrowstyle="-", color="#bbb", lw=.5))
-    except Exception:
-        pass
-    ax.axis("off")
-    ax.margins(.1)
-    save(fig, name)
-
-
-def cluster_radars(profiles, name):
-    """Average sector profile per cluster against the cross-cluster mean and SD band."""
-    sectors = sorted(profiles["sector"].unique())
-    clusters = sorted(profiles["cluster"].unique())
-    sd = profiles.groupby("sector")["mean_z"].std(ddof=1).reindex(sectors).values
-    fig, axes = plt.subplots(1, len(clusters), figsize=(5 * len(clusters), 5.2),
-                             subplot_kw=dict(polar=True))
-    for ax, cl in zip(np.atleast_1d(axes), clusters):
-        v = profiles[profiles["cluster"] == cl].set_index("sector")["mean_z"].reindex(sectors).values
-        col = CLUSTER_COLOR[(cl - 1) % 6 + 1]
-        _radar(ax, sectors, v, sd, col, col, f"Cluster {cl}")
-    fig.subplots_adjust(wspace=.5)
-    save(fig, name)

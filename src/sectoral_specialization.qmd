@@ -29,7 +29,7 @@ import pandas as pd
 
 from data import load_sector_eci, load_rank_zscore
 from sectors import sector_rank_matrix
-from figures import style, sector_heatmap, city_radars, specialization_dotplot
+from figures import style, sector_heatmap, specialization_dotplot
 
 style()
 
@@ -49,11 +49,6 @@ Reading each city's row shows where its complexity sits: professional services, 
 and business support rank high, retail and manufacturing low.
 
 ## Comparing city profiles
-
-```{python}
-city_radars(rank_zscore, ["nyc", "mexico_city", "rio_de_janeiro", "buenos_aires"],
-            "city_radars")
-```
 
 ![City sector profiles](../figs/city_radars.png)
 

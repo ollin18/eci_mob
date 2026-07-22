@@ -28,16 +28,17 @@ sys.path.insert(0, "src")
 import pandas as pd
 
 from data import load_rank_zscore, wide_profiles
-from clustering import similarity, clusters, linkage_matrix, network, cluster_profiles
-from figures import style, cosine_heatmap, dendro, city_network, cluster_radars
+from clustering import similarity, clusters, cluster_profiles
+from figures import style, cosine_heatmap
 
 style()
 
 rank_zscore = load_rank_zscore()
-country = dict(zip(rank_zscore["city"], rank_zscore["country"]))
 profiles = wide_profiles(rank_zscore)
 labels, sim = similarity(profiles)
 cl = clusters(sim, k=6)
+cl.to_frame("cluster").join(
+    rank_zscore.drop_duplicates("city").set_index("city")["country"]).sort_values("cluster")
 ```
 
 ## Who resembles whom
@@ -53,10 +54,6 @@ diagonal.
 
 ## Hierarchical clustering
 
-```{python}
-dendro(linkage_matrix(sim), labels, cl, country, "dendrogram")
-```
-
 ![Hierarchical clustering](../figs/dendrogram.png)
 
 Six groups emerge, mixing countries: capital and finance hubs cluster together across
@@ -64,17 +61,13 @@ borders, as do industrial belts and administrative centres.
 
 ## Similarity network
 
-```{python}
-g = network(sim, keep_top=0.6)
-city_network(g, cl, "network")
-```
-
 ![City similarity network](../figs/network.png)
 
 ## What each group looks like
 
 ```{python}
-cluster_radars(cluster_profiles(rank_zscore, cl), "cluster_radars")
+cluster_profiles(rank_zscore, cl).pivot(index="cluster", columns="sector",
+                                         values="mean_z").round(2)
 ```
 
 ![Cluster profiles](../figs/cluster_radars.png)
