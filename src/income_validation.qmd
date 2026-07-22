@@ -27,7 +27,7 @@ sys.path.insert(0, "src")
 
 import pandas as pd
 
-from eci import all_locations, load_panel, location_eci, city_eci, COUNTRIES
+from eci import load_panel, location_eci, city_eci, COUNTRIES
 from data import load_city_income, load_origin_wealth, CITY_LABEL
 from validation import city_table, city_fits, subcity_fits, subcity_points
 from figures import style, city_income_panels, subcity_panels
@@ -36,7 +36,6 @@ style()
 
 income = load_city_income()
 wealth = load_origin_wealth()
-eci = all_locations()
 ```
 
 ## Sub-city scale: origin wealth at destination
@@ -46,9 +45,8 @@ average of a residential wealth proxy over the home zones that feed it. More com
 destinations draw their workers from wealthier neighbourhoods.
 
 ```{python}
-fits = subcity_fits(eci, wealth)
-pts = subcity_points(eci, wealth)
-subcity_panels(pts, fits, "subcity_wealth")
+fits = subcity_fits(wealth)
+subcity_panels(subcity_points(wealth), fits, "subcity_wealth")
 fits
 ```
 

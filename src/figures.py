@@ -155,8 +155,8 @@ def subcity_panels(points, fits, name):
             ax.axis("off")
             continue
         for city, gc in g.groupby("city"):
-            ax.scatter(gc["eci_z"], gc["wealth_z"], s=7, alpha=.3, edgecolor="none")
-        _scatter_fit(ax, g["eci_z"].values, g["wealth_z"].values, None)
+            ax.scatter(gc["eci"], gc["wealth_z"], s=7, alpha=.3, edgecolor="none")
+        _scatter_fit(ax, g["eci"].values, g["wealth_z"].values, None)
         row = fmap.loc[c]
         ax.set_title(COUNTRY_NAME[c], fontweight="bold", fontsize=15)
         ax.text(.05, .93, rf"$R^2$ = {row.r2:.3f} {row.sig}", transform=ax.transAxes,

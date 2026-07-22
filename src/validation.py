@@ -43,10 +43,9 @@ def city_fits(city: pd.DataFrame) -> pd.DataFrame:
 # Sub-city scale: origin wealth at destination vs ECI
 # ======================
 
-def subcity_fits(eci: pd.DataFrame, wealth: pd.DataFrame) -> pd.DataFrame:
+def subcity_fits(wealth: pd.DataFrame) -> pd.DataFrame:
     """Population-weighted R2 of origin wealth on ECI, within each country."""
-    d = eci.merge(wealth[["geomid", "mean_origin_wealth", "h3_pop"]], on="geomid", how="inner")
-    d = d.dropna(subset=["eci", "mean_origin_wealth"])
+    d = wealth.dropna(subset=["eci", "mean_origin_wealth", "h3_pop"])
     rows = []
     for c, g in d.groupby("country"):
         zx = (g["eci"] - g["eci"].mean()) / g["eci"].std()
@@ -59,11 +58,9 @@ def subcity_fits(eci: pd.DataFrame, wealth: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def subcity_points(eci: pd.DataFrame, wealth: pd.DataFrame) -> pd.DataFrame:
-    """Within-city z-scored ECI and origin wealth for every work cell, for plotting."""
-    d = eci.merge(wealth[["geomid", "mean_origin_wealth", "h3_pop"]], on="geomid", how="inner")
-    d = d.dropna(subset=["eci", "mean_origin_wealth"]).copy()
-    d["eci_z"] = d.groupby("city")["eci"].transform(lambda s: (s - s.mean()) / s.std())
-    d["wealth_z"] = d.groupby("city")["mean_origin_wealth"].transform(
+def subcity_points(wealth: pd.DataFrame) -> pd.DataFrame:
+    """ECI and country-standardised origin wealth for every work cell, for plotting."""
+    d = wealth.dropna(subset=["eci", "mean_origin_wealth"]).copy()
+    d["wealth_z"] = d.groupby("country")["mean_origin_wealth"].transform(
         lambda s: (s - s.mean()) / s.std())
     return d
