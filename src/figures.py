@@ -168,6 +168,64 @@ def subcity_panels(points, fits, name):
 
 
 # ======================
+# Pipeline, one city (fig 1)
+# ======================
+
+def eci_map(eci, city, name):
+    """ECI over one city's work cells."""
+    from data import CITY_LABEL
+    d = eci[eci["city"] == city].dropna(subset=["eci"])
+    fig, ax = plt.subplots(figsize=(7, 7))
+    pc = PatchCollection(_hex_patches(d["geomid"]), cmap="magma", edgecolor="none")
+    pc.set_array(d["eci"].clip(*d["eci"].quantile([.01, .99])).values)
+    ax.add_collection(pc)
+    ax.autoscale_view()
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(CITY_LABEL.get(city, city), fontweight="bold", fontsize=15)
+    fig.colorbar(pc, ax=ax, shrink=.6, label=ECI_MOB)
+    save(fig, name)
+
+
+def dominant_sector_map(dom, geomids, name, title):
+    """Work cells coloured by the sector that employs the most workers."""
+    d = dom[dom["geomid"].isin(set(geomids))]
+    sectors = sorted(d["naics"].unique())
+    cmap = plt.get_cmap("tab20", len(sectors))
+    idx = {s: i for i, s in enumerate(sectors)}
+    fig, ax = plt.subplots(figsize=(8, 7))
+    pc = PatchCollection(_hex_patches(d["geomid"]), cmap=cmap, edgecolor="none")
+    pc.set_array(np.array([idx[s] for s in d["naics"]]))
+    pc.set_clim(-.5, len(sectors) - .5)
+    ax.add_collection(pc)
+    ax.autoscale_view()
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(title, fontweight="bold", fontsize=15)
+    handles = [plt.Line2D([], [], marker="s", ls="", color=cmap(i), label=s)
+               for s, i in idx.items()]
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1, .5),
+              fontsize=8, frameon=False)
+    save(fig, name)
+
+
+def sector_bar(ss, name):
+    """Mean sectoral complexity, worker-weighted, highest to lowest."""
+    fig, ax = plt.subplots(figsize=(7, 8))
+    y = np.arange(len(ss))[::-1]
+    colors = plt.cm.magma(np.linspace(.15, .85, len(ss)))
+    ax.barh(y, ss["mean_eci"], xerr=ss["sem"], color=colors, edgecolor="#2c3e50",
+            error_kw=dict(elinewidth=1.2, capsize=3))
+    ax.set_yticks(y)
+    ax.set_yticklabels(ss["sector"])
+    ax.axvline(0, color="#555", lw=1, ls="--")
+    ax.set_xlabel(ECI_SECT)
+    ax.set_title("Mean sectoral complexity", fontweight="bold")
+    fig.tight_layout()
+    save(fig, name)
+
+
+# ======================
 # Sectors (fig 4)
 # ======================
 

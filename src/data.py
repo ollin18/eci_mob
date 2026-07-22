@@ -46,3 +46,8 @@ def wide_profiles(rank_zscore: pd.DataFrame) -> pd.DataFrame:
     w = rank_zscore.pivot_table(index=["country", "city"], columns="sector",
                                 values="rank_zscore")
     return w.reset_index()
+
+
+def load_mx_workers(path: str = "data/sectors/mexico_city_workers.csv") -> pd.DataFrame:
+    """Workers by sector and work location in Mexico City, for the pipeline figure."""
+    return pd.read_csv(path, dtype={"geomid": str})

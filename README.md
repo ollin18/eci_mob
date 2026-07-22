@@ -30,6 +30,22 @@ Each notebook lives in `src/` and imports the helper modules beside it. Render f
 
 ## Key Results
 
+### The pipeline in one city
+
+Mexico City makes the whole construction legible. We rebuild location complexity from the commuting panel, map it over the metro, read the dominant sector in each work cell, and project complexity onto sectors.
+
+![ECI over Mexico City](figs/pipeline_eci_map.png)
+
+Complexity peaks along the Reforma and Polanco corridor and the western business districts, and falls off toward the eastern and northern periphery.
+
+![Dominant sector in Mexico City](figs/pipeline_dominant_sector.png)
+
+Retail blankets the residential periphery, manufacturing follows the industrial corridors, and the complex core carries the service and administrative sectors.
+
+![Mean sectoral complexity](figs/pipeline_sector_complexity.png)
+
+Projecting complexity onto sectors, weighting each work cell by the workers a sector employs there, ranks corporate, professional services and construction at the top and retail, manufacturing and education at the bottom.
+
 ### Complexity across the city
 
 ![ECI over work locations](figs/eci_maps.png)
