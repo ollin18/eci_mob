@@ -6,9 +6,9 @@ Cities are multi-scale complex systems in which aggregate economic outcomes emer
 
 ## Overview
 
-This repository contains the data and analysis for the paper. We build a within-city economic complexity index from human mobility, treating every work location as a bundle of the origins that supply its workforce, summarised by the residential education of those origins. A location is complex when it draws selectively from the higher-education tail rather than from the whole distribution. We then validate the index against income and wealth, project it onto sectors, and group cities by the shape of their sector profile.
+This repository contains the data and analysis for the paper. We build a within-city economic complexity index from human mobility, treating every work location as a bundle of the origins that supply its workforce, summarised by the residential education of those origins. We then validate the index against income and wealth, project it onto sectors, and group cities by the shape of their sector profile.
 
-The published input is the aggregated origin-destination panel: for each work location, the share of its workers coming from each percentile bin of residential education rate. Work locations are H3 resolution-8 cells, so map geometry comes straight from the cell index. The upstream steps that turn raw mobility traces and census education into this panel are not part of this repository.
+The data here is a commuting table: for each work location, the share of its workers coming from each percentile bin of residential education rate. Work locations are H3 resolution-8 cells, so map geometry comes straight from the cell index.
 
 ## Study Area
 

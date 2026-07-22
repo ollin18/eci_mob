@@ -16,13 +16,9 @@ jupyter: python3
 ## Setup
 
 We treat each work location as a bundle of the origins that supply its workforce,
-summarised by the residential education of those origins. A location is complex
-when it draws selectively from the higher-education tail rather than from the whole
-distribution. The published input is the aggregated origin-destination panel: for
-every work location, the share of its workers coming from each percentile bin of
-residential education rate. Work locations are H3 resolution-8 cells; the upstream
-steps that turn raw mobility traces and census education into this panel are not
-part of this repository.
+summarised by the residential education of those origins. The data here is a
+commuting table: for every work location, the share of its workers coming from each
+percentile bin of residential education rate. Work locations are H3 resolution-8 cells.
 
 ```{python}
 import os, sys
